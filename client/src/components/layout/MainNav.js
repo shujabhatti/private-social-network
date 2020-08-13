@@ -37,6 +37,12 @@ const MainNav = (props) => {
         text={`Hello ${user && user.name}`}
       />
       <SideBarItem
+        id={"change-pass-id"}
+        text={"Change Password"}
+        icon={"lock"}
+        link={"/change-password"}
+      />
+      <SideBarItem
         id={"exit-id"}
         icon={"exit_to_app"}
         text={"Logout"}

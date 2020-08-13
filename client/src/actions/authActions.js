@@ -7,6 +7,8 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  CHANGE_PASSWORD,
+  CHANGE_PASSWORD_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
 } from "./types";
@@ -76,6 +78,33 @@ export const login = (formData) => async (dispatch) => {
       type: LOGIN_FAIL,
       payload: err.response.data.msg,
     });
+  }
+};
+
+// Change User Password
+export const changePassword = (formData) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  try {
+    const res = await axios.put("/api/users/change-password", formData, config);
+
+    dispatch({
+      type: CHANGE_PASSWORD,
+      payload: res.data,
+    });
+
+    console.log(res.data);
+    // logout();
+  } catch (err) {
+    dispatch({
+      type: CHANGE_PASSWORD_FAIL,
+      payload: err.response.data.msg,
+    });
+    console.log(err.response.data.msg);
   }
 };
 

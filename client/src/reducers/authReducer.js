@@ -5,6 +5,8 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  CHANGE_PASSWORD,
+  CHANGE_PASSWORD_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
 } from "../actions/types";
@@ -13,6 +15,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: null,
   loading: true,
+  chgpwdmsg: null,
   user: null,
   error: null,
 };
@@ -46,6 +49,21 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loading: false,
         user: null,
+        error: action.payload,
+      };
+    case CHANGE_PASSWORD:
+      localStorage.removeItem("token");
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        chgpwdmsg: action.payload,
+      };
+    case CHANGE_PASSWORD_FAIL:
+      return {
+        ...state,
         error: action.payload,
       };
     case CLEAR_ERRORS:
