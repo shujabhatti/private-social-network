@@ -96,7 +96,7 @@ const ChangePassword = (props) => {
                       minLength='6'
                       required
                     />
-                    <FormSubmitButton text={"Register"} />
+                    <FormSubmitButton text={"Change Password"} />
                   </form>
                 </div>
               </div>

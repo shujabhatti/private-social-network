@@ -4,6 +4,7 @@ import Color from "../constants/Colors";
 import ImageContainer from "./ImageContainer";
 
 import { logout } from "../../actions/authActions";
+import { clearMembers } from "../../actions/memberActions";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -26,6 +27,7 @@ const MainNav = (props) => {
   }, []);
 
   const onLogout = () => {
+    props.clearMembers();
     props.logout();
   };
 
@@ -113,6 +115,7 @@ MainNav.defaultProps = {
 MainNav.propTypes = {
   selItem: PropTypes.string,
   logout: PropTypes.func.isRequired,
+  clearMembers: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
@@ -127,6 +130,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: (obj) => dispatch(logout(obj)),
+    clearMembers: () => dispatch(clearMembers()),
   };
 };
 

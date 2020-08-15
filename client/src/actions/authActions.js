@@ -9,6 +9,7 @@ import {
   LOGIN_FAIL,
   CHANGE_PASSWORD,
   CHANGE_PASSWORD_FAIL,
+  CLEAR_CHANGE_PASSWORD,
   LOGOUT,
   CLEAR_ERRORS,
 } from "./types";
@@ -98,7 +99,6 @@ export const changePassword = (formData) => async (dispatch) => {
     });
 
     console.log(res.data);
-    // logout();
   } catch (err) {
     dispatch({
       type: CHANGE_PASSWORD_FAIL,
@@ -115,5 +115,12 @@ export const logout = () => (dispatch) => dispatch({ type: LOGOUT });
 export const clearErrors = () => async (dispatch) => {
   dispatch({
     type: CLEAR_ERRORS,
+  });
+};
+
+// Clear Errors
+export const clearChangePassword = () => async (dispatch) => {
+  dispatch({
+    type: CLEAR_CHANGE_PASSWORD,
   });
 };

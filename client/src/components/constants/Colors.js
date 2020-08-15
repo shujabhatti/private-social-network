@@ -1,5 +1,5 @@
 export default {
-  primaryHex: "#FF6D02",
+  primaryHex: "#cd84f1",
   accent: "#c717fc",
   shadow: "#d0d0d0",
   input: "#f0f0f0",

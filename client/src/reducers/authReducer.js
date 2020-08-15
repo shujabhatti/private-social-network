@@ -7,6 +7,7 @@ import {
   LOGIN_FAIL,
   CHANGE_PASSWORD,
   CHANGE_PASSWORD_FAIL,
+  CLEAR_CHANGE_PASSWORD,
   LOGOUT,
   CLEAR_ERRORS,
 } from "../actions/types";
@@ -60,6 +61,11 @@ export default (state = initialState, action) => {
         loading: false,
         user: null,
         chgpwdmsg: action.payload,
+      };
+    case CLEAR_CHANGE_PASSWORD:
+      return {
+        ...state,
+        chgpwdmsg: null,
       };
     case CHANGE_PASSWORD_FAIL:
       return {

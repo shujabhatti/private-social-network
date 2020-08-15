@@ -6,7 +6,11 @@ import ImageContainer from "../layout/ImageContainer";
 import InputContainer from "../layout/InputContainer";
 import FormSubmitButton from "../layout/FormSubmitButton";
 
-import { login, clearErrors } from "../../actions/authActions";
+import {
+  login,
+  clearErrors,
+  clearChangePassword,
+} from "../../actions/authActions";
 
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -31,6 +35,7 @@ const Login = (props) => {
 
     if (chgpwdmsg) {
       M.toast({ html: `${chgpwdmsg.msg}` });
+      props.clearChangePassword();
     }
 
     if (error === "Invalid Email..!") {
@@ -104,6 +109,7 @@ Login.propTypes = {
   isAuthenticated: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
+  clearChangePassword: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -116,6 +122,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (obj) => dispatch(login(obj)),
     clearErrors: () => dispatch(clearErrors()),
+    clearChangePassword: () => dispatch(clearChangePassword()),
   };
 };
 
