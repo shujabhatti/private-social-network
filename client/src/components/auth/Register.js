@@ -60,7 +60,7 @@ const Register = (props) => {
               <div className='row'>
                 <div className='col s12 m6 hide-on-small-only'>
                   <ImageContainer
-                    src={require("../images/logo.png")}
+                    src={require("../images/register.png")}
                     alt={"Logo"}
                     style={{ height: "auto", width: "100%" }}
                   />

@@ -1,10 +1,17 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import InputContainer from "../layout/InputContainer";
 import orderBy from "lodash/orderBy";
 import Color from "../constants/Colors";
+// import Moment from "react-moment";
 
-// Create and import onscreenmembers function
-import { setOnScreenMembers } from "../../actions/memberActions";
+import { useHistory } from "react-router-dom";
+
+import {
+  setOnScreenMembers,
+  setCurrent,
+  deleteMember,
+  clearErrors,
+} from "../../actions/memberActions";
 
 import {
   TablePagination,
@@ -15,19 +22,21 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Backdrop,
 } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 
+import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 const MembersTable = (props) => {
   //#region Hooks and fetched properties
 
+  let history = useHistory();
+
   const members = props.tbData;
 
-  const { onscreenmembers } = props;
+  const { onscreenmembers, returnmessage } = props;
 
   // For Setting Current Page of the Records
   const [page, setPage] = useState(0);
@@ -44,7 +53,24 @@ const MembersTable = (props) => {
 
   //#endregion
 
+  useEffect(() => {
+    if (returnmessage === "Member deleted successfully...!") {
+      M.toast({ html: `${returnmessage}` });
+      props.clearErrors();
+    }
+    // eslint-disable-next-line
+  }, [returnmessage]);
+
   //#region Functions
+
+  const onEdit = (obj) => {
+    props.setCurrent(obj);
+    history.push("/member-administrator");
+  };
+
+  const onDelete = (id) => {
+    props.deleteMember(id);
+  };
 
   //#region On Screen Filters Function
 
@@ -117,7 +143,7 @@ const MembersTable = (props) => {
     <Fragment>
       {/* Filter Container */}
       <div className='row'>
-        <div className='col s12 m4'>
+        <div className='col s12 m3'>
           <InputContainer
             type='text'
             name='idfil'
@@ -129,7 +155,7 @@ const MembersTable = (props) => {
             style={inputStyle}
           />
         </div>
-        <div className='col s12 m4'>
+        <div className='col s12 m3'>
           <InputContainer
             type='text'
             name='namefil'
@@ -141,7 +167,7 @@ const MembersTable = (props) => {
             style={inputStyle}
           />
         </div>
-        <div className='col s12 m4'>
+        <div className='col s12 m3'>
           <InputContainer
             type='text'
             name='emailfil'
@@ -215,6 +241,12 @@ const MembersTable = (props) => {
                   ) : null}
                 </div>{" "}
               </TableHeadCellStyle>
+              <TableHeadCellStyle align='center'>
+                <div>Edit</div>
+              </TableHeadCellStyle>
+              <TableHeadCellStyle align='center'>
+                <div>Delete</div>
+              </TableHeadCellStyle>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -227,7 +259,26 @@ const MembersTable = (props) => {
                   </TableCell>
                   <TableCell align='left'>{obj.name}</TableCell>
                   <TableCell align='left'>{obj.email}</TableCell>
-                  <TableCell align='left'>{obj.create_date}</TableCell>
+                  <TableCell align='left'>
+                    {/* <Moment format='MMMM do YYYY, h:mm:ss a'>{new Date(created)}</Moment> */}
+                    {obj.create_date}
+                  </TableCell>
+                  <TableCell align='center'>
+                    <div
+                      style={editButtonStyle}
+                      onClick={onEdit.bind(this, obj)}
+                    >
+                      <span className='material-icons'>edit</span>
+                    </div>
+                  </TableCell>
+                  <TableCell align='center'>
+                    <div
+                      style={editButtonStyle}
+                      onClick={onDelete.bind(this, obj._id)}
+                    >
+                      <span className='material-icons'>delete</span>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             {emptyRows > 0 && (
@@ -307,11 +358,6 @@ const inputStyle = {
   borderBottom: "1px solid black",
 };
 
-const headingLabelStyle = {
-  fontWeight: "bold",
-  fontSize: "14px",
-};
-
 const sortIconStyle = {
   display: "flex",
   alignItems: "center",
@@ -323,16 +369,24 @@ const editButtonStyle = {
 
 MembersTable.propTypes = {
   onscreenmembers: PropTypes.object.isRequired,
+  returnmessage: PropTypes.string.isRequired,
   setOnScreenMembers: PropTypes.func.isRequired,
+  setCurrent: PropTypes.func.isRequired,
+  deleteMember: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   onscreenmembers: state.member.onscreenmembers,
+  returnmessage: state.member.returnmessage,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setOnScreenMembers: (obj) => dispatch(setOnScreenMembers(obj)),
+    setCurrent: (obj) => dispatch(setCurrent(obj)),
+    deleteMember: (id) => dispatch(deleteMember(id)),
+    clearErrors: () => dispatch(clearErrors()),
   };
 };
 

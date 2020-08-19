@@ -6,7 +6,11 @@ import ImageContainer from "../layout/ImageContainer";
 import InputContainer from "../layout/InputContainer";
 import FormSubmitButton from "../layout/FormSubmitButton";
 
-import { changePassword, clearErrors } from "../../actions/authActions";
+import {
+  loadUser,
+  changePassword,
+  clearErrors,
+} from "../../actions/authActions";
 
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -23,12 +27,10 @@ const ChangePassword = (props) => {
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
-  const { error, isAuthenticated } = props;
+  const { error } = props;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      props.history.push("/login");
-    }
+    props.loadUser();
 
     if (error === "User not found..!") {
       M.toast({ html: `${error}` });
@@ -41,7 +43,7 @@ const ChangePassword = (props) => {
       props.clearErrors();
     }
     // eslint-disable-next-line
-  }, [error, isAuthenticated, props.history]);
+  }, [error]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -63,9 +65,13 @@ const ChangePassword = (props) => {
               <div className='row'>
                 <div className='col s12 m6 hide-on-small-only'>
                   <ImageContainer
-                    src={require("../images/logo.png")}
+                    src={require("../images/changepassword.png")}
                     alt={"Logo"}
-                    style={{ height: "auto", width: "100%" }}
+                    style={{
+                      height: "220px",
+                      width: "80%",
+                      marginLeft: "15px",
+                    }}
                   />
                 </div>
                 <div className='col s12 m6'>
@@ -110,18 +116,18 @@ const ChangePassword = (props) => {
 
 ChangePassword.propTypes = {
   error: PropTypes.object.isRequired,
-  isAuthenticated: PropTypes.object.isRequired,
   changePassword: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   error: state.auth.error,
-  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    loadUser: () => dispatch(loadUser()),
     changePassword: (obj) => dispatch(changePassword(obj)),
     clearErrors: () => dispatch(clearErrors()),
   };

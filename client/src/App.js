@@ -2,6 +2,7 @@ import React, { useEffect, Fragment } from "react";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import ChangePassword from "./components/auth/ChangePassword";
+import MembersAdministrator from "./components/pages/MembersAdministrator";
 import Home from "./components/pages/Home";
 import About from "./components/pages/About";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -32,6 +33,11 @@ const App = () => {
               exact
               path='/change-password'
               component={ChangePassword}
+            />
+            <PrivateRoute
+              exact
+              path='/member-administrator'
+              component={MembersAdministrator}
             />
             <Route exact path='/about' component={About} />
             <Route exact path='/register' component={Register} />

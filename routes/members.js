@@ -47,13 +47,22 @@ router.post(
     const { _id, name, email, password, member_type, acc_status } = req.body;
 
     try {
-      let member = await Member.findOne({ email });
+      let member = await Member.findOne({ _id });
+
+      if (member) {
+        return res
+          .status(400)
+          .json({ msg: "Member with this id already exists..!" });
+      }
+
+      member = await Member.findOne({ email });
 
       if (member) {
         return res
           .status(400)
           .json({ msg: "Member with this email already exists..!" });
       }
+
       member = new Member({
         _id,
         name,
@@ -67,9 +76,9 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       member.password = await bcrypt.hash(password, salt);
 
-      const contact = await member.save();
+      const result = await member.save();
 
-      res.json(contact);
+      res.json(result);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -96,6 +105,8 @@ router.put(
     }
 
     const { name, email, member_type, acc_status } = req.body;
+
+    console.log(req.params.id);
 
     try {
       let member = await Member.findById(req.params.id);

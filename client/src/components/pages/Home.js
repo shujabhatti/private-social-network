@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import MainNav from "../layout/MainNav";
 import SubHeader from "../layout/SubHeader";
+import ActionBtn from "../layout/ActionBtn";
 
 import { loadUser } from "../../actions/authActions";
 import { getMembers, clearMembers } from "../../actions/memberActions";
@@ -43,6 +44,14 @@ const Home = (props) => {
             </div>
           </div>
         </div>
+        <ActionBtn
+          link={"/member-administrator"}
+          icon={"add"}
+          className={"fixed-action-btn tooltipped"}
+          data-position='left'
+          data-tooltip='Add Member'
+          size={"large"}
+        />
       </div>
     </Fragment>
   );

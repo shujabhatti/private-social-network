@@ -81,7 +81,7 @@ const MainNav = (props) => {
       <nav style={{ background: Color.primaryHex }}>
         <div className='nav-wrapper'>
           <h6 href='#!' className='brand-logo center'>
-            <span>User Authentication BoilerPlate</span>
+            <span>Private Social Network - [Admin Portal]</span>
           </h6>
           <a href='#!' className='sidenav-trigger' data-target='side-nav'>
             <i className='material-icons'>menu</i>
@@ -92,11 +92,12 @@ const MainNav = (props) => {
         <li>
           <ImageContainer
             className='responsive-img'
-            src={require("../images/logo.png")}
+            src={require("../images/dashboard.png")}
             style={{
               width: "90%",
               height: "180px",
-              margin: "auto",
+              marginTop: "15px",
+              marginLeft: "15px",
             }}
             alt='Logo'
           />
