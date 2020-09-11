@@ -5,7 +5,7 @@ import Color from "../constants/Colors";
 
 const SideBarItem = (props) => {
   return (
-    <li id={props.id}>
+    <li id={props.id} {...props}>
       <Link to={props.link} onClick={props.onClick}>
         <i className={`material-icons left`} style={iconStyle}>
           {props.icon}

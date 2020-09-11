@@ -5,9 +5,7 @@ import {
   SET_CURRENT,
   CLEAR_CURRENT,
   UPDATE_MEMBER,
-  FILTER_MEMBERS,
   CLEAR_MEMBERS,
-  CLEAR_FILTER,
   MEMBER_ERROR,
   CLEAR_MEMBER_ERROR,
   SET_ONSCREEN_MEMBERS,
@@ -21,6 +19,7 @@ const initialState = {
   filtered: null,
   returnmessage: "",
   error: null,
+  loading: true,
 };
 
 export default (state = initialState, action) => {

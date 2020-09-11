@@ -3,6 +3,7 @@ export default {
   successHex: "#5cb85c",
   warningHex: "#f0ad4e",
   dangerHex: "#d9534f",
+  lightHex: "#ecf0f1",
   accent: "#c717fc",
   shadow: "#d0d0d0",
   input: "#f0f0f0",

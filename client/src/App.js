@@ -4,6 +4,8 @@ import Login from "./components/auth/Login";
 import ChangePassword from "./components/auth/ChangePassword";
 import MembersAdministrator from "./components/pages/MembersAdministrator";
 import Home from "./components/pages/Home";
+import News from "./components/pages/News/News";
+import NewsAdministrator from "./components/pages/News/NewsAdministrator";
 import About from "./components/pages/About";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/routing/PrivateRoute";
@@ -29,6 +31,12 @@ const App = () => {
         <Fragment>
           <Switch>
             <PrivateRoute exact path='/' component={Home} />
+            <PrivateRoute exact path='/news' component={News} />
+            <PrivateRoute
+              exact
+              path='/news-administrator'
+              component={NewsAdministrator}
+            />
             <PrivateRoute
               exact
               path='/change-password'

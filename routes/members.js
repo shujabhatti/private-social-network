@@ -44,7 +44,17 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { _id, name, email, password, member_type, acc_status } = req.body;
+    const {
+      _id,
+      name,
+      email,
+      password,
+      member_type,
+      program,
+      course,
+      year,
+      acc_status,
+    } = req.body;
 
     try {
       let member = await Member.findOne({ _id });
@@ -55,23 +65,30 @@ router.post(
           .json({ msg: "Member with this id already exists..!" });
       }
 
-      member = await Member.findOne({ email });
-
-      if (member) {
-        return res
-          .status(400)
-          .json({ msg: "Member with this email already exists..!" });
+      if (member_type === "Student") {
+        member = new Member({
+          _id,
+          name,
+          email,
+          password,
+          member_type,
+          program,
+          course,
+          year,
+          acc_status,
+          update_by: req.user.id,
+        });
+      } else {
+        member = new Member({
+          _id,
+          name,
+          email,
+          password,
+          member_type,
+          acc_status,
+          update_by: req.user.id,
+        });
       }
-
-      member = new Member({
-        _id,
-        name,
-        email,
-        password,
-        member_type,
-        acc_status,
-        update_by: req.user.id,
-      });
 
       const salt = await bcrypt.genSalt(10);
       member.password = await bcrypt.hash(password, salt);
@@ -104,9 +121,15 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, member_type, acc_status } = req.body;
-
-    console.log(req.params.id);
+    const {
+      name,
+      email,
+      member_type,
+      program,
+      course,
+      year,
+      acc_status,
+    } = req.body;
 
     try {
       let member = await Member.findById(req.params.id);
@@ -120,6 +143,15 @@ router.put(
       memberFields.name = name;
       memberFields.email = email;
       memberFields.member_type = member_type;
+      if (member_type === "Student") {
+        memberFields.program = program;
+        memberFields.course = course;
+        memberFields.year = year;
+      } else {
+        memberFields.program = "";
+        memberFields.course = "";
+        memberFields.year = "";
+      }
       memberFields.acc_status = acc_status;
       memberFields.update_by = req.user.id;
 

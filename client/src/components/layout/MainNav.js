@@ -39,6 +39,12 @@ const MainNav = (props) => {
         text={`Hello ${user && user.name}`}
       />
       <SideBarItem
+        id={"news-id"}
+        icon={"assignment"}
+        text={`News Feeds`}
+        link={"/news"}
+      />
+      <SideBarItem
         id={"change-pass-id"}
         text={"Change Password"}
         icon={"lock"}
@@ -80,8 +86,19 @@ const MainNav = (props) => {
     <Fragment>
       <nav style={{ background: Color.primaryHex }}>
         <div className='nav-wrapper'>
-          <h6 href='#!' className='brand-logo center'>
-            <span>Private Social Network - [Admin Portal]</span>
+          <h6 href='#!' className='brand-logo center' style={{ width: "100%" }}>
+            <span
+              className='hide-on-med-and-down'
+              style={{ paddingLeft: "15%" }}
+            >
+              Private Social Network - [Admin Portal]
+            </span>
+            <span className='show-on-medium hide-on-small-only hide-on-large-only'>
+              PSN - [Admin Portal]
+            </span>
+            <span className='show-on-small hide-on-med-and-up'>
+              Admin Portal
+            </span>
           </h6>
           <a href='#!' className='sidenav-trigger' data-target='side-nav'>
             <i className='material-icons'>menu</i>

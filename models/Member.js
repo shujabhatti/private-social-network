@@ -15,7 +15,6 @@ const MemberScheme = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, "email is required"],
-    unique: true,
   },
   password: {
     type: String,
@@ -26,6 +25,21 @@ const MemberScheme = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, "member type is required"],
+  },
+  program: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  course: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  year: {
+    type: String,
+    trim: true,
+    default: "",
   },
   acc_status: {
     type: String,

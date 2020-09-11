@@ -1,8 +1,9 @@
 import React, { Fragment, useState, useEffect } from "react";
 import InputContainer from "../layout/InputContainer";
+import ConfirmationDialogue from "../layout/ConfirmationDialogue";
 import orderBy from "lodash/orderBy";
 import Color from "../constants/Colors";
-// import Moment from "react-moment";
+import Moment from "react-moment";
 
 import { useHistory } from "react-router-dom";
 
@@ -50,6 +51,10 @@ const MembersTable = (props) => {
   const [columnToSort, setColumnToSort] = useState("");
   // For Setting Type of Sort for selected Column
   const [sortDirection, setSortDirecton] = useState("desc");
+  // Hook to handle Confirmation Dialog
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  // Hook to get current member ID
+  const [currentMemberID, setCurrentMemberID] = useState("");
 
   //#endregion
 
@@ -69,7 +74,17 @@ const MembersTable = (props) => {
   };
 
   const onDelete = (id) => {
-    props.deleteMember(id);
+    setConfirmDialog(true);
+    setCurrentMemberID(id);
+  };
+
+  const onConfirmDialogClose = () => {
+    setConfirmDialog(false);
+  };
+
+  const onConfirm = () => {
+    props.deleteMember(currentMemberID);
+    onConfirmDialogClose();
   };
 
   //#region On Screen Filters Function
@@ -179,6 +194,18 @@ const MembersTable = (props) => {
             style={inputStyle}
           />
         </div>
+        <div className='col s12 m3'>
+          {/* <InputContainer
+            type='text'
+            name='datefil'
+            value={datefil}
+            text='Create Date'
+            onChange={(e) => setDateFil(e.target.value)}
+            onKeyUp={() => onScreenFilter()}
+            onPaste={() => onScreenFilter()}
+            style={inputStyle}
+          /> */}
+        </div>
       </div>
       {/* Table Container */}
       <TableContainer component={Paper}>
@@ -260,8 +287,9 @@ const MembersTable = (props) => {
                   <TableCell align='left'>{obj.name}</TableCell>
                   <TableCell align='left'>{obj.email}</TableCell>
                   <TableCell align='left'>
-                    {/* <Moment format='MMMM do YYYY, h:mm:ss a'>{new Date(created)}</Moment> */}
-                    {obj.create_date}
+                    <Moment format='MMMM do YYYY, h:mm:ss a'>
+                      {new Date(obj.create_date)}
+                    </Moment>
                   </TableCell>
                   <TableCell align='center'>
                     <div
@@ -309,6 +337,14 @@ const MembersTable = (props) => {
           root: classes.root,
           label: classes.label,
         }}
+      />
+      {/* Delete Member Confirmation Dialog */}
+      <ConfirmationDialogue
+        open={confirmDialog}
+        onConfirmDialogClose={onConfirmDialogClose}
+        title='Delete Member'
+        content='Are you sure you want to delete this?'
+        onConfirm={onConfirm}
       />
     </Fragment>
   );

@@ -4,15 +4,17 @@ import Color from "../constants/Colors";
 
 const FormSubmitButton = (props) => {
   return (
-    <div>
-      <input
+    <div id={props.id}>
+      <button
         type='submit'
-        value={props.text}
         className={`col s12 btn-small waves-effect waves-dark`}
         tabIndex='-1'
-        style={{ ...buttonStyle, ...props.style }}
+        style={{ ...props.style, ...buttonStyle }}
         {...props}
-      />
+      >
+        <i className='material-icons left'>{props.icons}</i>
+        {props.text}
+      </button>
     </div>
   );
 };

@@ -6,9 +6,7 @@ import {
   SET_CURRENT,
   CLEAR_CURRENT,
   UPDATE_MEMBER,
-  FILTER_MEMBERS,
   CLEAR_MEMBERS,
-  CLEAR_FILTER,
   MEMBER_ERROR,
   CLEAR_MEMBER_ERROR,
   SET_ONSCREEN_MEMBERS,
@@ -83,6 +81,33 @@ export const updateMember = (formData) => async (dispatch) => {
   try {
     const res = await axios.put(
       `/api/members/${formData._id}`,
+      formData,
+      config
+    );
+
+    dispatch({
+      type: UPDATE_MEMBER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: MEMBER_ERROR,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+// Change Member Password
+export const changePassword = (formData) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  try {
+    const res = await axios.put(
+      `/api/members/change-password/${formData._id}`,
       formData,
       config
     );

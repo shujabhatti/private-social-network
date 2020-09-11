@@ -50,8 +50,8 @@ InputContainer.propTypes = {
 
 InputContainer.defaultProps = {
   type: "text",
-  name: "defname",
-  value: "default value",
+  name: "",
+  value: "",
   text: "default text",
 };
 

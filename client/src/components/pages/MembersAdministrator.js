@@ -3,41 +3,28 @@ import MainNav from "../layout/MainNav";
 import SubHeader from "../layout/SubHeader";
 import FormLayout from "../layout/FormLayout";
 import InputContainer from "../layout/InputContainer";
+import LabelContainer from "../layout/LabelContainer";
 import SelectContainer from "../layout/SelectContainer";
 import FormSubmitButton from "../layout/FormSubmitButton";
 import ButtonContainer from "../layout/ButtonContainer";
+import ConfirmationDialogue from "../layout/ConfirmationDialogue";
 import Color from "../constants/Colors";
 
 import { loadUser } from "../../actions/authActions";
 import {
   addMember,
   updateMember,
+  changePassword,
+  clearCurrent,
   clearErrors,
 } from "../../actions/memberActions";
 
+import { hideElem, enableElem, disableElem } from "../../helperFunctions";
+
+import Moment from "react-moment";
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
-//#region Outer Functions
-
-const showElem = (elemName) => {
-  document.getElementById(elemName).style.display = "block";
-};
-
-const hideElem = (elemName) => {
-  document.getElementById(elemName).style.display = "none";
-};
-
-const enableElem = (elemName) => {
-  document.getElementById(elemName).disabled = false;
-};
-
-const disableElem = (elemName) => {
-  document.getElementById(elemName).disabled = true;
-};
-
-//#endregion
 
 const MembersAdministrator = (props) => {
   const memberTypeDropdown = [
@@ -72,6 +59,9 @@ const MembersAdministrator = (props) => {
     email: "",
     password: "",
     member_type: "",
+    program: "",
+    course: "",
+    year: "",
     acc_status: "",
     create_date: "",
   };
@@ -84,6 +74,9 @@ const MembersAdministrator = (props) => {
     email,
     password,
     member_type,
+    program,
+    course,
+    year,
     acc_status,
     create_date,
   } = member;
@@ -93,9 +86,14 @@ const MembersAdministrator = (props) => {
 
   const { current, error, returnmessage } = props;
 
+  const [confirmDialog, setConfirmDialog] = useState(false);
+
   useEffect(() => {
     props.loadUser();
+    // eslint-disable-next-line
+  }, []);
 
+  useEffect(() => {
     if (error) {
       M.toast({ html: `${error}` });
       props.clearErrors();
@@ -113,17 +111,26 @@ const MembersAdministrator = (props) => {
 
     if (current) {
       setMember(current);
+      disableElem("_id");
       disableElem("password");
     } else {
+      hideElem("create_date");
       hideElem("passwordBtn");
     }
 
     // eslint-disable-next-line
   }, [current, error, returnmessage]);
 
+  const onConfirmDialogClose = () => {
+    setConfirmDialog(false);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
+    setConfirmDialog(true);
+  };
 
+  const onConfirm = () => {
     if (!current) {
       if (
         _id === "" ||
@@ -137,8 +144,12 @@ const MembersAdministrator = (props) => {
       } else {
         props.addMember(member);
       }
-    } else if (current) {
+    } else if (
+      current &&
+      document.getElementById("password").disabled === true
+    ) {
       if (
+        _id === "" ||
         name === "" ||
         email === "" ||
         member_type === "" ||
@@ -151,11 +162,30 @@ const MembersAdministrator = (props) => {
           name,
           email,
           member_type,
+          program,
+          course,
+          year,
           acc_status,
         };
         props.updateMember(obj);
       }
+    } else if (
+      current &&
+      document.getElementById("password").disabled === false
+    ) {
+      if (_id === "") {
+        M.toast({ html: "Member ID not found!" });
+      } else if (password === "") {
+        M.toast({ html: "Please enter valid password!" });
+      } else {
+        const obj = {
+          _id,
+          password,
+        };
+        props.changePassword(obj);
+      }
     }
+    onConfirmDialogClose();
   };
 
   return (
@@ -183,7 +213,6 @@ const MembersAdministrator = (props) => {
                         text='Member ID'
                         onChange={onChange}
                         labelClass={`${_id !== "" ? "active" : ""}`}
-                        required
                       />
                     </div>
                     <div className='col s12 m6'>
@@ -195,7 +224,6 @@ const MembersAdministrator = (props) => {
                         text='Member Name'
                         onChange={onChange}
                         labelClass={`${name !== "" ? "active" : ""}`}
-                        required
                       />
                     </div>
                     <div className='col s12 m6'>
@@ -207,7 +235,18 @@ const MembersAdministrator = (props) => {
                         text='Email Address'
                         onChange={onChange}
                         labelClass={`${email !== "" ? "active" : ""}`}
-                        required
+                      />
+                    </div>
+                    <div className='col s12 m6'>
+                      <LabelContainer
+                        id='create_date'
+                        name='create_date'
+                        value={
+                          <Moment format='MMMM do YYYY, h:mm:ss a'>
+                            {new Date(create_date)}
+                          </Moment>
+                        }
+                        text='Create Date'
                       />
                     </div>
                     <div className='col s12'>
@@ -219,7 +258,6 @@ const MembersAdministrator = (props) => {
                         text='Password'
                         onChange={onChange}
                         labelClass={`${password !== "" ? "active" : ""}`}
-                        required
                       />
                     </div>
                     <div className='col s12 m6'>
@@ -230,7 +268,6 @@ const MembersAdministrator = (props) => {
                         value={member_type}
                         text='Select member type'
                         onChange={onChange}
-                        required
                       />
                     </div>
                     <div className='col s12 m6'>
@@ -241,9 +278,40 @@ const MembersAdministrator = (props) => {
                         value={acc_status}
                         text='Select account status'
                         onChange={onChange}
-                        required
                       />
                     </div>
+                    {/* Student Data Section */}
+                    <div className='col s12 m4'>
+                      <InputContainer
+                        type='text'
+                        name='program'
+                        value={program}
+                        text='Program'
+                        onChange={onChange}
+                        labelClass={`${program !== "" ? "active" : ""}`}
+                      />
+                    </div>
+                    <div className='col s12 m4'>
+                      <InputContainer
+                        type='text'
+                        name='course'
+                        value={course}
+                        text='Course'
+                        onChange={onChange}
+                        labelClass={`${course !== "" ? "active" : ""}`}
+                      />
+                    </div>
+                    <div className='col s12 m4'>
+                      <InputContainer
+                        type='number'
+                        name='year'
+                        value={year}
+                        text='Year'
+                        onChange={onChange}
+                        labelClass={`${year !== "" ? "active" : ""}`}
+                      />
+                    </div>
+                    {/* Student Data Section */}
                     <div className='row'>
                       <div className='col s12 m4'>
                         <FormSubmitButton
@@ -254,6 +322,14 @@ const MembersAdministrator = (props) => {
                         <ButtonContainer
                           id='passwordBtn'
                           text={"Change Password"}
+                          onClick={() => {
+                            enableElem("password");
+                            disableElem("name");
+                            disableElem("email");
+                            disableElem("member_type");
+                            disableElem("acc_status");
+                            hideElem("passwordBtn");
+                          }}
                           color={Color.dangerHex}
                         />
                       </div>
@@ -261,6 +337,7 @@ const MembersAdministrator = (props) => {
                         <ButtonContainer
                           text={"Cancel"}
                           link={"/"}
+                          onClick={() => props.clearCurrent()}
                           style={{
                             color: Color.dangerHex,
                             backgroundColor: "transparent",
@@ -276,6 +353,13 @@ const MembersAdministrator = (props) => {
           </div>
         </div>
       </div>
+      <ConfirmationDialogue
+        open={confirmDialog}
+        onConfirmDialogClose={onConfirmDialogClose}
+        title='Update Member'
+        content='Are you sure you want to save changes?'
+        onConfirm={onConfirm}
+      />
     </Fragment>
   );
 };
@@ -286,6 +370,8 @@ MembersAdministrator.propTypes = {
   loadUser: PropTypes.func.isRequired,
   addMember: PropTypes.func.isRequired,
   updateMember: PropTypes.func.isRequired,
+  changePassword: PropTypes.func.isRequired,
+  clearCurrent: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
 };
 
@@ -300,6 +386,8 @@ const mapDispatchToProps = (dispatch) => {
     loadUser: () => dispatch(loadUser()),
     addMember: (obj) => dispatch(addMember(obj)),
     updateMember: (obj) => dispatch(updateMember(obj)),
+    changePassword: (obj) => dispatch(changePassword(obj)),
+    clearCurrent: () => dispatch(clearCurrent()),
     clearErrors: () => dispatch(clearErrors()),
   };
 };
