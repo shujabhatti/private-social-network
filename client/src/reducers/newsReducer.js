@@ -13,7 +13,7 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  records: null,
+  records: [],
   onscreenrecords: [],
   current: null,
   filtered: null,

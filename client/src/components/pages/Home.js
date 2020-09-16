@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import MainNav from "../layout/MainNav";
-import SubHeader from "../layout/SubHeader";
-import ActionBtn from "../layout/ActionBtn";
+import { Link } from "react-router-dom";
 
 import { loadUser } from "../../actions/authActions";
 import {
@@ -10,7 +9,12 @@ import {
   clearCurrent,
 } from "../../actions/memberActions";
 
+import { Tooltip, IconButton } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+
 import MembersTable from "./MembersTable";
+
+import Color from "./../constants/Colors";
 
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -38,29 +42,36 @@ const Home = (props) => {
       <MainNav selItem={"home-id"} />
       <div className='main'>
         <div className='row'>
-          <SubHeader
-            text={"Members Records"}
-            style={{ textAlign: "left", paddingLeft: "20px" }}
-          />
-          <div className='row'>
-            <div className='col s10 offset-s1'>
-              <MembersTable tbData={members} />
-            </div>
+          <div className='col s12 xl10 offset-xl1'>
+            <MembersTable tbData={members} />
           </div>
         </div>
-        <ActionBtn
-          link={"/member-administrator"}
-          icon={"add"}
-          onClick={() => props.clearCurrent()}
-          className={"fixed-action-btn tooltipped"}
-          data-position='left'
-          data-tooltip='Add Member'
-          size={"large"}
-        />
+        <div
+          className='row'
+          style={{ position: "absolute", bottom: "10px", right: "20px" }}
+        >
+          <StyledTooltip title='Add Member' placement='left' arrow>
+            <Link to={"/member-administrator"}>
+              <IconButton
+                aria-label='filters'
+                onClick={() => props.clearCurrent()}
+                style={{ backgroundColor: Color.primaryHex }}
+              >
+                <i className={`material-icons`}>add</i>
+              </IconButton>
+            </Link>
+          </StyledTooltip>
+        </div>
       </div>
     </Fragment>
   );
 };
+
+const StyledTooltip = withStyles({
+  tooltip: {
+    fontSize: "1rem",
+  },
+})(Tooltip);
 
 Home.propTypes = {
   loadUser: PropTypes.func.isRequired,

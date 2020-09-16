@@ -25,6 +25,12 @@ const MemberScheme = new mongoose.Schema({
     trim: true,
     required: [true, "name of user, updated by is required"],
   },
+  imageName: {
+    type: String,
+  },
+  newsImage: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("News", MemberScheme);

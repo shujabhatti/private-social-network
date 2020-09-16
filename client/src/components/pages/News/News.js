@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import MainNav from "../../layout/MainNav";
 import SubHeader from "../../layout/SubHeader";
-import ActionBtn from "../../layout/ActionBtn";
 import InputContainer from "../../layout/InputContainer";
 import ConfirmationDialogue from "../../layout/ConfirmationDialogue";
+import { Link } from "react-router-dom";
 
 import { loadUser } from "../../../actions/authActions";
 import {
@@ -16,7 +16,14 @@ import {
   clearErrors,
 } from "../../../actions/newsActions";
 
-import { TablePagination } from "@material-ui/core";
+import {
+  TablePagination,
+  Tooltip,
+  IconButton,
+  Avatar,
+  CardHeader,
+} from "@material-ui/core";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -34,6 +41,7 @@ const News = (props) => {
     isAuthenticated,
     error,
     records,
+    loading,
     returnmessage,
     onscreenrecords,
   } = props;
@@ -113,13 +121,15 @@ const News = (props) => {
 
   //#endregion
 
+  const classes = useStyles();
+
   return (
     <Fragment>
       <MainNav selItem={"news-id"} />
       <div className='main'>
         <div className='row'>
           <SubHeader
-            text={"News List"}
+            text={"News Module"}
             style={{ textAlign: "left", paddingLeft: "20px" }}
           />
           <div className='row'>
@@ -142,31 +152,69 @@ const News = (props) => {
               {/* News Cards */}
               <div className='row'>
                 <ul class='collapsible popout'>
-                  {onscreenrecords
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((obj) => (
-                      <li>
-                        <div class='collapsible-header'>
-                          <i class='material-icons'>description</i>
-                          <span
-                            style={titleStyle}
-                            onClick={onEdit.bind(this, obj)}
+                  {loading && (
+                    <li>
+                      <div class='collapsible-header'>
+                        <i class='material-icons'>schedule</i>
+                        <span>Loading...</span>
+                      </div>
+                    </li>
+                  )}
+                  {!loading && records.length === 0 ? (
+                    <li>
+                      <div class='collapsible-header'>
+                        <i class='material-icons'>error_outline</i>
+                        <span>No record found....</span>
+                      </div>
+                    </li>
+                  ) : (
+                    onscreenrecords
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((obj) => (
+                        <li>
+                          <div
+                            class='collapsible-header'
+                            style={{ height: "70px" }}
                           >
-                            {obj.title}
-                          </span>
-                        </div>
-                        <div class='collapsible-body'>
-                          <span>{obj.description}</span>
-                          <a
-                            href='#!'
-                            onClick={onDelete.bind(this, obj._id)}
-                            className='secondary-content'
-                          >
-                            <i className='material-icons grey-text'>delete</i>
-                          </a>
-                        </div>
-                      </li>
-                    ))}
+                            <CardHeader
+                              avatar={
+                                <Avatar
+                                  alt={
+                                    obj.title
+                                      ? obj.title.charAt(0).toUpperCase()
+                                      : "X"
+                                  }
+                                  src={obj.newsImage}
+                                  className={classes.large}
+                                />
+                              }
+                              title={
+                                <span
+                                  onClick={onEdit.bind(this, obj)}
+                                  style={titleStyle}
+                                >
+                                  {obj.title}
+                                </span>
+                              }
+                            />
+                          </div>
+                          <div class='collapsible-body'>
+                            <span>{obj.description}</span>
+                            <a
+                              href='#!'
+                              onClick={onDelete.bind(this, obj._id)}
+                              className='secondary-content'
+                            >
+                              <i className='material-icons grey-text'>delete</i>
+                            </a>
+                          </div>
+                        </li>
+                      ))
+                  )}
+                  {}
                 </ul>
                 <TablePagination
                   rowsPerPageOptions={[
@@ -190,15 +238,22 @@ const News = (props) => {
             </div>
           </div>
         </div>
-        <ActionBtn
-          link={"/news-administrator"}
-          icon={"add"}
-          onClick={() => props.clearCurrent()}
-          className={"fixed-action-btn tooltipped"}
-          data-position='left'
-          data-tooltip='Add News'
-          size={"large"}
-        />
+        <div
+          className='row'
+          style={{ position: "absolute", bottom: "10px", right: "20px" }}
+        >
+          <StyledTooltip title='Add News' placement='left' arrow>
+            <Link to={"/news-administrator"}>
+              <IconButton
+                aria-label='filters'
+                onClick={() => props.clearCurrent()}
+                style={{ backgroundColor: Color.primaryHex }}
+              >
+                <i className={`material-icons`}>add</i>
+              </IconButton>
+            </Link>
+          </StyledTooltip>
+        </div>
         <ConfirmationDialogue
           open={confirmDialog}
           onConfirmDialogClose={onConfirmDialogClose}
@@ -210,6 +265,19 @@ const News = (props) => {
     </Fragment>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  large: {
+    width: theme.spacing(5),
+    height: theme.spacing(5),
+  },
+}));
+
+const StyledTooltip = withStyles({
+  tooltip: {
+    fontSize: "1rem",
+  },
+})(Tooltip);
 
 const inputStyle = {
   backgroundColor: "transparent",
@@ -237,12 +305,14 @@ News.propTypes = {
   returnmessage: PropTypes.string.isRequired,
   records: PropTypes.array.isRequired,
   onscreenrecords: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.auth.error,
   records: state.news.records,
+  loading: state.news.loading,
   onscreenrecords: state.news.onscreenrecords,
   returnmessage: state.news.returnmessage,
 });

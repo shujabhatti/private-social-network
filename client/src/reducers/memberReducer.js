@@ -5,6 +5,7 @@ import {
   SET_CURRENT,
   CLEAR_CURRENT,
   UPDATE_MEMBER,
+  UPDATE_IMAGE,
   CLEAR_MEMBERS,
   MEMBER_ERROR,
   CLEAR_MEMBER_ERROR,
@@ -13,7 +14,7 @@ import {
 } from "../actions/types";
 
 const initialState = {
-  members: null,
+  members: [],
   onscreenmembers: [],
   current: null,
   filtered: null,
@@ -51,6 +52,15 @@ export default (state = initialState, action) => {
           member._id === action.payload._id ? action.payload : member
         ),
         returnmessage: "Member updated successfully...!",
+        loading: false,
+      };
+    case UPDATE_IMAGE:
+      return {
+        ...state,
+        members: state.members.map((member) =>
+          member._id === action.payload._id ? action.payload : member
+        ),
+        returnmessage: "Image Updated!",
         loading: false,
       };
     case DELETE_MEMBER:

@@ -57,7 +57,11 @@
 header,
 .main,
 footer {
-  padding-left: 300px;
+  padding-left: 250px;
+}
+
+#side-nav {
+  width: 250px;
 }
 
 /* Main Div Styling Ends Here */

@@ -9,7 +9,7 @@ const ButtonContainer = (props) => {
       <a
         id={props.id}
         className={`waves-effect waves-light btn`}
-        style={{ ...buttonStyle, backgroundColor: props.color, ...props.style }}
+        style={{ ...buttonStyle, ...props.style }}
         onClick={props.onClick}
         {...props}
       >
@@ -22,6 +22,7 @@ const ButtonContainer = (props) => {
 
 const buttonStyle = {
   color: Color.fore,
+  backgroundColor: Color.primaryHex,
   width: "100%",
 };
 
@@ -32,10 +33,6 @@ ButtonContainer.propTypes = {
   onClick: PropTypes.func,
   icons: PropTypes.string,
   link: PropTypes.string,
-};
-
-ButtonContainer.defaultProps = {
-  text: "Default Button",
 };
 
 export default ButtonContainer;

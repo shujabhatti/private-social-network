@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import InputContainer from "../layout/InputContainer";
 import ConfirmationDialogue from "../layout/ConfirmationDialogue";
-import orderBy from "lodash/orderBy";
+import SubHeader from "../layout/SubHeader";
 import Color from "../constants/Colors";
 import Moment from "react-moment";
 
@@ -15,16 +15,20 @@ import {
 } from "../../actions/memberActions";
 
 import {
-  TablePagination,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Avatar,
+  IconButton,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Tooltip,
 } from "@material-ui/core";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -37,24 +41,18 @@ const MembersTable = (props) => {
 
   const members = props.tbData;
 
-  const { onscreenmembers, returnmessage } = props;
+  const { onscreenmembers, returnmessage, loading } = props;
 
-  // For Setting Current Page of the Records
-  const [page, setPage] = useState(0);
-  // For Setting Rows Per Page for Pagination
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   // On screen filters hooks
   const [idfil, setIDFil] = useState("");
   const [namefil, setNameFil] = useState("");
   const [emailfil, setEmailFil] = useState("");
-  // For Setting Column to Sort
-  const [columnToSort, setColumnToSort] = useState("");
-  // For Setting Type of Sort for selected Column
-  const [sortDirection, setSortDirecton] = useState("desc");
   // Hook to handle Confirmation Dialog
   const [confirmDialog, setConfirmDialog] = useState(false);
   // Hook to get current member ID
   const [currentMemberID, setCurrentMemberID] = useState("");
+  // On Opening / Closing Filter Dialog
+  const [filterDialog, setFilterDialog] = useState(false);
 
   //#endregion
 
@@ -87,6 +85,10 @@ const MembersTable = (props) => {
     onConfirmDialogClose();
   };
 
+  const onFilterDialogClose = () => {
+    setFilterDialog(false);
+  };
+
   //#region On Screen Filters Function
 
   const filterCombiner = (d, filterArray) => {
@@ -115,229 +117,118 @@ const MembersTable = (props) => {
 
   //#endregion
 
-  //#region Pagination Functions
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(event.target.value);
-    setPage(0);
-  };
-
-  const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, onscreenmembers.length - page * rowsPerPage);
-
-  //#endregion
-
-  //#region Sorting Functions
-
-  const invertDirection = {
-    asc: "desc",
-    desc: "asc",
-  };
-
-  const handleSort = (columnName) => {
-    setColumnToSort(columnName);
-    if (columnToSort === columnName) {
-      setSortDirecton(invertDirection[sortDirection]);
-    } else {
-      setSortDirecton("asc");
-    }
-  };
-
-  //#endregion
-
   const classes = useStyles();
 
   //#endregion
 
   return (
     <Fragment>
-      {/* Filter Container */}
-      <div className='row'>
-        <div className='col s12 m3'>
-          <InputContainer
-            type='text'
-            name='idfil'
-            value={idfil}
-            text='Member ID'
-            onChange={(e) => setIDFil(e.target.value)}
-            onKeyUp={() => onScreenFilter()}
-            onPaste={() => onScreenFilter()}
-            style={inputStyle}
-          />
-        </div>
-        <div className='col s12 m3'>
-          <InputContainer
-            type='text'
-            name='namefil'
-            value={namefil}
-            text='Member Name'
-            onChange={(e) => setNameFil(e.target.value)}
-            onKeyUp={() => onScreenFilter()}
-            onPaste={() => onScreenFilter()}
-            style={inputStyle}
-          />
-        </div>
-        <div className='col s12 m3'>
-          <InputContainer
-            type='text'
-            name='emailfil'
-            value={emailfil}
-            text='Email Address'
-            onChange={(e) => setEmailFil(e.target.value)}
-            onKeyUp={() => onScreenFilter()}
-            onPaste={() => onScreenFilter()}
-            style={inputStyle}
-          />
-        </div>
-        <div className='col s12 m3'>
-          {/* <InputContainer
-            type='text'
-            name='datefil'
-            value={datefil}
-            text='Create Date'
-            onChange={(e) => setDateFil(e.target.value)}
-            onKeyUp={() => onScreenFilter()}
-            onPaste={() => onScreenFilter()}
-            style={inputStyle}
-          /> */}
+      {/* Filter Button */}
+      <div className='row' style={{ display: "flex", marginBottom: "0px" }}>
+        <SubHeader
+          text={"Members Records"}
+          style={{ textAlign: "left", paddingLeft: "20px", width: "93%" }}
+        />
+        <div
+          className='row'
+          style={{
+            float: "right",
+            marginTop: "10px",
+          }}
+        >
+          <StyledTooltip title='Filters' placement='top' arrow>
+            <IconButton
+              aria-label='filters'
+              onClick={() => setFilterDialog(true)}
+            >
+              <i className={`material-icons`}>filter_list</i>
+            </IconButton>
+          </StyledTooltip>
         </div>
       </div>
-      {/* Table Container */}
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label='simple table'>
-          <TableHead
-            classes={{
-              root: classes.root,
-              label: classes.label,
-            }}
-          >
-            <TableRow>
-              <TableHeadCellStyle align='left'>
-                <div onClick={() => handleSort("_id")} style={sortIconStyle}>
-                  <span>Member ID</span>
-                  {columnToSort === "_id" ? (
-                    sortDirection === "asc" ? (
-                      <span class='material-icons'>arrow_drop_up</span>
-                    ) : (
-                      <span class='material-icons'>arrow_drop_down</span>
-                    )
-                  ) : null}
-                </div>{" "}
-              </TableHeadCellStyle>
-              <TableHeadCellStyle align='left'>
-                <div onClick={() => handleSort("name")} style={sortIconStyle}>
-                  <span>Member Name</span>
-                  {columnToSort === "name" ? (
-                    sortDirection === "asc" ? (
-                      <span class='material-icons'>arrow_drop_up</span>
-                    ) : (
-                      <span class='material-icons'>arrow_drop_down</span>
-                    )
-                  ) : null}
-                </div>{" "}
-              </TableHeadCellStyle>
-              <TableHeadCellStyle align='left'>
-                <div onClick={() => handleSort("email")} style={sortIconStyle}>
-                  <span>Email Address</span>
-                  {columnToSort === "email" ? (
-                    sortDirection === "asc" ? (
-                      <span class='material-icons'>arrow_drop_up</span>
-                    ) : (
-                      <span class='material-icons'>arrow_drop_down</span>
-                    )
-                  ) : null}
-                </div>{" "}
-              </TableHeadCellStyle>
-              <TableHeadCellStyle align='left'>
-                <div
-                  onClick={() => handleSort("create_date")}
-                  style={sortIconStyle}
-                >
-                  <span>Create Date</span>
-                  {columnToSort === "create_date" ? (
-                    sortDirection === "asc" ? (
-                      <span class='material-icons'>arrow_drop_up</span>
-                    ) : (
-                      <span class='material-icons'>arrow_drop_down</span>
-                    )
-                  ) : null}
-                </div>{" "}
-              </TableHeadCellStyle>
-              <TableHeadCellStyle align='center'>
-                <div>Edit</div>
-              </TableHeadCellStyle>
-              <TableHeadCellStyle align='center'>
-                <div>Delete</div>
-              </TableHeadCellStyle>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orderBy(onscreenmembers, columnToSort, sortDirection)
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((obj) => (
-                <TableRow key={obj._id}>
-                  <TableCell component='th' scope='row' align='left'>
-                    {obj._id}
-                  </TableCell>
-                  <TableCell align='left'>{obj.name}</TableCell>
-                  <TableCell align='left'>{obj.email}</TableCell>
-                  <TableCell align='left'>
+      {/* Members Cards */}
+      <div className='row'>
+        {loading && (
+          <ul class='collapsible popout'>
+            <li>
+              <div class='collapsible-header'>
+                <i class='material-icons'>schedule</i>
+                <span>Loading...</span>
+              </div>
+            </li>
+          </ul>
+        )}
+        {!loading && members.length === 0 ? (
+          <ul class='collapsible popout'>
+            <li>
+              <div class='collapsible-header'>
+                <i class='material-icons'>error_outline</i>
+                <span>No record found....</span>
+              </div>
+            </li>
+          </ul>
+        ) : (
+          onscreenmembers.map((obj) => (
+            <div className='col s12 m6 l4'>
+              <Card className={classes.card}>
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      alt={obj.name ? obj.name.charAt(0).toUpperCase() : "X"}
+                      src={obj.memberImage}
+                      className={classes.large}
+                    />
+                  }
+                  title={obj.name}
+                  subheader={obj.email}
+                />
+                <CardContent>
+                  <Typography
+                    variant='body5'
+                    component='p'
+                    className={classes.right}
+                  >
+                    <span style={{ fontWeight: "bold" }}>
+                      {obj.member_type}
+                    </span>
+                  </Typography>
+                  <br />
+                  <Typography
+                    variant='body2'
+                    color='textSecondary'
+                    component='p'
+                  >
+                    Roll No: {obj._id}
+                  </Typography>
+                  <Typography
+                    variant='body2'
+                    color='textSecondary'
+                    component='p'
+                  >
                     <Moment format='MMMM do YYYY, h:mm:ss a'>
                       {new Date(obj.create_date)}
                     </Moment>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <div
-                      style={editButtonStyle}
-                      onClick={onEdit.bind(this, obj)}
-                    >
-                      <span className='material-icons'>edit</span>
-                    </div>
-                  </TableCell>
-                  <TableCell align='center'>
-                    <div
-                      style={editButtonStyle}
-                      onClick={onDelete.bind(this, obj._id)}
-                    >
-                      <span className='material-icons'>delete</span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {/* Table Pagination Component */}
-      <TablePagination
-        rowsPerPageOptions={[
-          5,
-          10,
-          25,
-          50,
-          100,
-          { value: onscreenmembers.length, label: "All" },
-        ]}
-        component='div'
-        count={onscreenmembers.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-        classes={{
-          root: classes.root,
-          label: classes.label,
-        }}
-      />
+                  </Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                  <IconButton
+                    aria-label='add to favorites'
+                    onClick={onEdit.bind(this, obj)}
+                  >
+                    <i className='material-icons'>edit</i>
+                  </IconButton>
+                  <IconButton
+                    aria-label='add to favorites'
+                    onClick={onDelete.bind(this, obj._id)}
+                  >
+                    <i className='material-icons'>delete</i>
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </div>
+          ))
+        )}
+      </div>
       {/* Delete Member Confirmation Dialog */}
       <ConfirmationDialogue
         open={confirmDialog}
@@ -346,61 +237,87 @@ const MembersTable = (props) => {
         content='Are you sure you want to delete this?'
         onConfirm={onConfirm}
       />
+      {/* Filter Dialog */}
+      <Dialog
+        open={filterDialog}
+        onClose={onFilterDialogClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+        className={classes.dialogContainer}
+      >
+        <DialogTitle id='alert-dialog-title'>Filter Members</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            <div className='row' style={{ width: "250px" }}>
+              <InputContainer
+                type='text'
+                name='idfil'
+                value={idfil}
+                text='Member ID'
+                onChange={(e) => setIDFil(e.target.value)}
+                onKeyUp={() => onScreenFilter()}
+                onPaste={() => onScreenFilter()}
+                style={inputStyle}
+              />
+
+              <InputContainer
+                type='text'
+                name='namefil'
+                value={namefil}
+                text='Member Name'
+                onChange={(e) => setNameFil(e.target.value)}
+                onKeyUp={() => onScreenFilter()}
+                onPaste={() => onScreenFilter()}
+                style={inputStyle}
+              />
+
+              <InputContainer
+                type='text'
+                name='emailfil'
+                value={emailfil}
+                text='Email Address'
+                onChange={(e) => setEmailFil(e.target.value)}
+                onKeyUp={() => onScreenFilter()}
+                onPaste={() => onScreenFilter()}
+                style={inputStyle}
+              />
+            </div>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
     </Fragment>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    background: Color.primaryHex,
-    color: "white",
-    height: 52,
-    padding: "0 30px",
+  card: {
+    background: Color.input,
+    marginLeft: 10,
+    marginBottom: 20,
   },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: "25ch",
+  right: {
+    float: "right",
   },
-  table: {
-    minWidth: 650,
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
   },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    backgroundColor: Color.fore,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(1, 4, 3),
-    width: "400px",
+  dialogContainer: {
+    opacity: "0.9",
+    textAlign: "center",
   },
 }));
 
-const TableHeadCellStyle = withStyles(() => ({
-  head: {
-    backgroundColor: Color.primaryHex,
-    color: Color.fore,
+const StyledTooltip = withStyles({
+  tooltip: {
+    fontSize: "1rem",
   },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
+})(Tooltip);
 
 const inputStyle = {
   backgroundColor: "transparent",
   borderStyle: "none",
   borderBottom: "1px solid black",
-};
-
-const sortIconStyle = {
-  display: "flex",
-  alignItems: "center",
-};
-
-const editButtonStyle = {
-  cursor: "pointer",
 };
 
 MembersTable.propTypes = {
@@ -410,11 +327,13 @@ MembersTable.propTypes = {
   setCurrent: PropTypes.func.isRequired,
   deleteMember: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   onscreenmembers: state.member.onscreenmembers,
   returnmessage: state.member.returnmessage,
+  loading: state.member.loading,
 });
 
 const mapDispatchToProps = (dispatch) => {

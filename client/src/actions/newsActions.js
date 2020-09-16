@@ -49,14 +49,21 @@ export const setOnScreenNews = (obj) => async (dispatch) => {
 
 // Add News
 export const addNews = (formData) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in formData) {
+    form_data.append(key, formData[key]);
+    console.log(key, formData[key]);
+  }
+
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   };
 
   try {
-    const res = await axios.post("/api/news", formData, config);
+    const res = await axios.post("/api/news", form_data, config);
 
     dispatch({
       type: ADD_NEWS,
@@ -72,14 +79,21 @@ export const addNews = (formData) => async (dispatch) => {
 
 // Update News
 export const updateNews = (formData) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in formData) {
+    form_data.append(key, formData[key]);
+    console.log(key, formData[key]);
+  }
+
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   };
 
   try {
-    const res = await axios.put(`/api/news/${formData._id}`, formData, config);
+    const res = await axios.put(`/api/news/${formData._id}`, form_data, config);
 
     dispatch({
       type: UPDATE_NEWS,

@@ -6,6 +6,11 @@ import ImageContainer from "./ImageContainer";
 import { logout } from "../../actions/authActions";
 import { clearMembers } from "../../actions/memberActions";
 
+import { titleCase } from "../../helperFunctions";
+
+import { Badge, Avatar, Tooltip } from "@material-ui/core";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -21,6 +26,8 @@ const selectedItem = (selItem) => {
 const MainNav = (props) => {
   const { isAuthenticated, user } = props;
 
+  const classes = useStyles();
+
   useEffect(() => {
     selectedItem(props.selItem);
     // eslint-disable-next-line
@@ -31,13 +38,34 @@ const MainNav = (props) => {
     props.logout();
   };
 
+  const onlineUser = (
+    <Fragment>
+      <div className={classes.root}>
+        <StyledBadge
+          overlap='circle'
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          variant='dot'
+        >
+          <StyledTooltip title={titleCase(`${user && user.name}`)} arrow>
+            <Avatar
+              alt={`${user && user.name}`}
+              src=''
+              onClick={() => console.log(user)}
+              style={{ cursor: "pointer" }}
+            />
+          </StyledTooltip>
+        </StyledBadge>
+      </div>
+    </Fragment>
+  );
+
   const authLinks = (
     <Fragment>
-      <SideBarItem
-        id={"home-id"}
-        icon={"account_circle"}
-        text={`Hello ${user && user.name}`}
-      />
+      <li className='hide-on-large-only'>{onlineUser}</li>
+      <SideBarItem id={"home-id"} icon={"groups"} text={"Members"} />
       <SideBarItem
         id={"news-id"}
         icon={"assignment"}
@@ -103,6 +131,11 @@ const MainNav = (props) => {
           <a href='#!' className='sidenav-trigger' data-target='side-nav'>
             <i className='material-icons'>menu</i>
           </a>
+          <ul class='right'>
+            <li className='hide-on-med-and-down'>
+              {isAuthenticated && onlineUser}
+            </li>
+          </ul>
         </div>
       </nav>
       <ul className='sidenav sidenav-fixed' id='side-nav'>
@@ -112,7 +145,7 @@ const MainNav = (props) => {
             src={require("../images/dashboard.png")}
             style={{
               width: "90%",
-              height: "180px",
+              height: "150px",
               marginTop: "15px",
               marginLeft: "15px",
             }}
@@ -125,6 +158,54 @@ const MainNav = (props) => {
     </Fragment>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+    marginRight: theme.spacing(4),
+  },
+  tooltip: {
+    fontSize: "3em",
+  },
+}));
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "$ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}))(Badge);
+
+const StyledTooltip = withStyles({
+  tooltip: {
+    fontSize: "1rem",
+  },
+})(Tooltip);
 
 MainNav.defaultProps = {
   selItem: "home-id",

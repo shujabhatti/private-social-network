@@ -13,7 +13,7 @@ const ActionBtn = (props) => {
         >
           <i
             className={`${props.size} material-icons`}
-            style={{ backgroundColor: `${Color.primaryHex}`, ...props.style }}
+            style={{ backgroundColor: `${props.color}`, ...props.style }}
           >
             {props.icon}
           </i>
@@ -21,6 +21,10 @@ const ActionBtn = (props) => {
       </Link>
     </div>
   );
+};
+
+ActionBtn.defaultProps = {
+  color: Color.primaryHex,
 };
 
 export default ActionBtn;

@@ -6,6 +6,7 @@ import {
   SET_CURRENT,
   CLEAR_CURRENT,
   UPDATE_MEMBER,
+  UPDATE_IMAGE,
   CLEAR_MEMBERS,
   MEMBER_ERROR,
   CLEAR_MEMBER_ERROR,
@@ -49,14 +50,21 @@ export const setOnScreenMembers = (obj) => async (dispatch) => {
 
 // Add Member
 export const addMember = (formData) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in formData) {
+    form_data.append(key, formData[key]);
+    console.log(key, formData[key]);
+  }
+
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   };
 
   try {
-    const res = await axios.post("/api/members", formData, config);
+    const res = await axios.post("/api/members", form_data, config);
 
     dispatch({
       type: ADD_MEMBER,
@@ -72,21 +80,61 @@ export const addMember = (formData) => async (dispatch) => {
 
 // Update Member
 export const updateMember = (formData) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in formData) {
+    form_data.append(key, formData[key]);
+    console.log(key, formData[key]);
+  }
+
   const config = {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   };
 
   try {
     const res = await axios.put(
       `/api/members/${formData._id}`,
-      formData,
+      form_data,
       config
     );
 
     dispatch({
       type: UPDATE_MEMBER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: MEMBER_ERROR,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+// Update member Image
+export const updateImage = (id, imgObj) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in imgObj) {
+    form_data.append(key, imgObj[key]);
+  }
+
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  try {
+    const res = await axios.put(
+      `/api/members/change-profile/${id}`,
+      form_data,
+      config
+    );
+
+    dispatch({
+      type: UPDATE_IMAGE,
       payload: res.data,
     });
   } catch (err) {

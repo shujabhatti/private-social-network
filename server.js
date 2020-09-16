@@ -6,8 +6,10 @@ connectDB();
 
 // Init middleware
 app.use(express.json({ extended: false }));
+app.use("/uploads/members", express.static("uploads/members"));
+app.use("/uploads/news", express.static("uploads/news"));
 
-app.get("/", (req, res) => res.json({ msg: "Hello Node" }));
+app.get("/", (req, res) => res.json({ msg: "Private Social Network API..." }));
 
 // Define Routes
 app.use("/api/auth", require("./routes/auth"));

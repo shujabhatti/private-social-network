@@ -1,9 +1,40 @@
 const express = require("express");
+const fs = require("fs");
+const { promisify } = require("util");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const Member = require("../models/Member");
+const multer = require("multer");
+const unlinkAsync = promisify(fs.unlink);
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/members/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const fileFilter = function (req, file, cb) {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    // Accept file
+    cb(null, true);
+  } else {
+    // Reject file
+    cb("Only .JPEG or .PNG extensions are allowed!", false);
+  }
+};
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter,
+});
 
 // @route   GET /api/members
 // @des     Get all members
@@ -23,114 +54,158 @@ router.get("/", auth, async (req, res) => {
 // @route     POST api/members
 // @desc      Add new member
 // @access    Private
-router.post(
-  "/",
-  [
-    auth,
-    [
-      check("_id", "Member id is required").not().isEmpty(),
-      check("name", "Name is required").not().isEmpty(),
-      check("email", "Valid Email is required").isEmail(),
-      check("password", "Password must be of 6 or more characters").isLength({
-        min: 6,
-      }),
-      check("member_type", "Member type is required").not().isEmpty(),
-      check("acc_status", "Account status is required").not().isEmpty(),
-    ],
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.post("/", auth, upload.single("memberImage"), async (req, res) => {
+  const {
+    _id,
+    name,
+    email,
+    password,
+    member_type,
+    program,
+    course,
+    year,
+    acc_status,
+  } = req.body;
 
-    const {
-      _id,
-      name,
-      email,
-      password,
-      member_type,
-      program,
-      course,
-      year,
-      acc_status,
-    } = req.body;
+  let member = await Member.findOne({ _id });
 
-    try {
-      let member = await Member.findOne({ _id });
-
-      if (member) {
-        return res
-          .status(400)
-          .json({ msg: "Member with this id already exists..!" });
-      }
-
-      if (member_type === "Student") {
-        member = new Member({
-          _id,
-          name,
-          email,
-          password,
-          member_type,
-          program,
-          course,
-          year,
-          acc_status,
-          update_by: req.user.id,
-        });
-      } else {
-        member = new Member({
-          _id,
-          name,
-          email,
-          password,
-          member_type,
-          acc_status,
-          update_by: req.user.id,
-        });
-      }
-
-      const salt = await bcrypt.genSalt(10);
-      member.password = await bcrypt.hash(password, salt);
-
-      const result = await member.save();
-
-      res.json(result);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
-    }
+  if (member) {
+    return res
+      .status(400)
+      .json({ msg: "Member with this id already exists..!" });
   }
-);
+
+  let imagePath;
+  let imageName;
+
+  if (req.file !== undefined) {
+    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    imageName = req.file.path;
+  } else {
+    imagePath = "";
+    imageName = "";
+  }
+
+  try {
+    if (member_type === "Student") {
+      member = new Member({
+        _id,
+        name,
+        email,
+        password,
+        member_type,
+        program,
+        course,
+        year,
+        acc_status,
+        memberImage: imagePath,
+        imageName: imageName,
+        update_by: req.user.id,
+      });
+    } else {
+      member = new Member({
+        _id,
+        name,
+        email,
+        password,
+        member_type,
+        acc_status,
+        memberImage: imagePath,
+        imageName: imageName,
+        update_by: req.user.id,
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    member.password = await bcrypt.hash(password, salt);
+
+    const result = await member.save();
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
 
 // @route     PUT api/members/:id
 // @desc      Update member
 // @access    Private
-router.put(
-  "/:id",
-  auth,
-  [
-    check("name", "Name is required").not().isEmpty(),
-    check("email", "Valid Email is required").isEmail(),
-    check("member_type", "Member type is required").not().isEmpty(),
-    check("acc_status", "Account status is required").not().isEmpty(),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.put("/:id", auth, upload.single("memberImage"), async (req, res) => {
+  const {
+    name,
+    email,
+    member_type,
+    program,
+    course,
+    year,
+    acc_status,
+  } = req.body;
+
+  let member = await Member.findById(req.params.id);
+
+  if (!member) {
+    return res.status(404).json({ msg: "Member not found" });
+  }
+
+  let imagePath;
+  let imageName;
+
+  if (req.file !== undefined) {
+    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    imageName = req.file.path;
+  } else {
+    imagePath = "";
+    imageName = "";
+  }
+
+  try {
+    const memberFields = {};
+
+    memberFields.name = name;
+    memberFields.email = email;
+    memberFields.member_type = member_type;
+    if (member_type === "Student") {
+      memberFields.program = program;
+      memberFields.course = course;
+      memberFields.year = year;
+    } else {
+      memberFields.program = "";
+      memberFields.course = "";
+      memberFields.year = "";
+    }
+    memberFields.memberImage = imagePath;
+    memberFields.imageName = imageName;
+    memberFields.acc_status = acc_status;
+    memberFields.update_by = req.user.id;
+
+    if (memberFields.memberImage !== null && memberFields.imageName !== null) {
+      if (member.imageName) {
+        await unlinkAsync(member.imageName);
+      }
     }
 
-    const {
-      name,
-      email,
-      member_type,
-      program,
-      course,
-      year,
-      acc_status,
-    } = req.body;
+    member = await Member.findByIdAndUpdate(
+      req.params.id,
+      { $set: memberFields },
+      { new: true }
+    );
 
+    res.json(member);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route     PUT api/members/change-profile/:id
+// @desc      Update image
+// @access    Private
+router.put(
+  "/change-profile/:id",
+  auth,
+  upload.single("memberImage"),
+  async (req, res) => {
     try {
       let member = await Member.findById(req.params.id);
 
@@ -138,21 +213,22 @@ router.put(
         return res.status(404).json({ msg: "Member not found" });
       }
 
-      const memberFields = {};
+      await unlinkAsync(member.imageName);
 
-      memberFields.name = name;
-      memberFields.email = email;
-      memberFields.member_type = member_type;
-      if (member_type === "Student") {
-        memberFields.program = program;
-        memberFields.course = course;
-        memberFields.year = year;
+      let imagePath;
+      let imageName;
+
+      if (req.file !== undefined) {
+        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+        imageName = req.file.path;
       } else {
-        memberFields.program = "";
-        memberFields.course = "";
-        memberFields.year = "";
+        imagePath = "";
+        imageName = "";
       }
-      memberFields.acc_status = acc_status;
+
+      const memberFields = {};
+      memberFields.memberImage = imagePath;
+      memberFields.imageName = imageName;
       memberFields.update_by = req.user.id;
 
       member = await Member.findByIdAndUpdate(
@@ -163,7 +239,7 @@ router.put(
 
       res.json(member);
     } catch (err) {
-      console.error(er.message);
+      console.error(err.message);
       res.status(500).send("Server Error");
     }
   }
@@ -223,6 +299,8 @@ router.delete("/:id", auth, async (req, res) => {
     let member = await Member.findById(req.params.id);
 
     if (!member) return res.status(404).json({ msg: "Member not found" });
+
+    await unlinkAsync(member.imageName);
 
     await Member.findByIdAndRemove(req.params.id);
 
