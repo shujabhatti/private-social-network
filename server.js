@@ -8,6 +8,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 app.use("/uploads/members", express.static("uploads/members"));
 app.use("/uploads/news", express.static("uploads/news"));
+app.use("/uploads/users", express.static("uploads/users"));
 
 app.get("/", (req, res) => res.json({ msg: "Private Social Network API..." }));
 

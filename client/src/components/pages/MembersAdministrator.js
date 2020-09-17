@@ -23,12 +23,7 @@ import {
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import {
-  showElem,
-  hideElem,
-  enableElem,
-  disableElem,
-} from "../../helperFunctions";
+import { hideElem, enableElem, disableElem } from "../../helperFunctions";
 
 import Moment from "react-moment";
 import M from "materialize-css/dist/js/materialize.min.js";
@@ -251,24 +246,25 @@ const MembersAdministrator = (props) => {
             style={{ textAlign: "left", paddingLeft: "20px" }}
           />
           <div className='row'>
-            <div className='col s12 m10 offset-m1 l8 offset-l2'>
+            <div className='col xs12 s10 offset-s1 m10 offset-m1 l10 offset-l1 xl8 offset-xl2'>
               <FormLayout>
                 <div className='row'>
                   <form onSubmit={onSubmit}>
                     <div className='row'>
-                      <div className='col s12 offset-m1 m3 offset-l1 l4'>
+                      <div className='col s12 offset-m1 m3 offset-l1 l4 offset-xl1 xl3'>
                         {/* Image Section */}
-                        <div className='col s10 m12'>
+                        <div style={{ marginLeft: "10px" }}>
                           <Avatar
                             alt={name && name.charAt(0).toUpperCase()}
                             src={showImage}
                             className={classes.large}
                           />
                         </div>
-                        <div className='col s2 m12'>
+                        <div>
                           <div
                             className='input-field'
                             id='change-image-container'
+                            style={{ marginLeft: "10px" }}
                           >
                             <input
                               id='file'

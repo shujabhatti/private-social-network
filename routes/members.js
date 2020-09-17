@@ -148,16 +148,14 @@ router.put("/:id", auth, upload.single("memberImage"), async (req, res) => {
     return res.status(404).json({ msg: "Member not found" });
   }
 
+  if (req.file !== undefined) {
+    if (member.imageName !== "") {
+      await unlinkAsync(member.imageName);
+    }
+  }
+
   let imagePath;
   let imageName;
-
-  if (req.file !== undefined) {
-    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-    imageName = req.file.path;
-  } else {
-    imagePath = "";
-    imageName = "";
-  }
 
   try {
     const memberFields = {};
@@ -174,16 +172,14 @@ router.put("/:id", auth, upload.single("memberImage"), async (req, res) => {
       memberFields.course = "";
       memberFields.year = "";
     }
-    memberFields.memberImage = imagePath;
-    memberFields.imageName = imageName;
     memberFields.acc_status = acc_status;
-    memberFields.update_by = req.user.id;
-
-    if (memberFields.memberImage !== null && memberFields.imageName !== null) {
-      if (member.imageName) {
-        await unlinkAsync(member.imageName);
-      }
+    if (req.file !== undefined) {
+      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      imageName = req.file.path;
+      memberFields.memberImage = imagePath;
+      memberFields.imageName = imageName;
     }
+    memberFields.update_by = req.user.id;
 
     member = await Member.findByIdAndUpdate(
       req.params.id,

@@ -12,8 +12,10 @@ const FormSubmitButton = (props) => {
         style={{ ...props.style, ...buttonStyle }}
         {...props}
       >
-        <i className='material-icons left'>{props.icons}</i>
-        {props.text}
+        <i className='material-icons' style={{ verticalAlign: "middle" }}>
+          {props.icons}
+        </i>
+        &nbsp;&nbsp;{props.text}
       </button>
     </div>
   );
@@ -31,7 +33,7 @@ FormSubmitButton.propTypes = {
 };
 
 FormSubmitButton.defaultProps = {
-  text: "Submit Button",
+  text: "",
 };
 
 export default FormSubmitButton;

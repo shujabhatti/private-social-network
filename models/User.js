@@ -21,6 +21,12 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  imageName: {
+    type: String,
+  },
+  userImage: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);

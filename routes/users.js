@@ -1,4 +1,6 @@
 const express = require("express");
+const fs = require("fs");
+const { promisify } = require("util");
 const router = express.Router();
 const User = require("../models/User");
 const config = require("config");
@@ -6,6 +8,35 @@ const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
+const multer = require("multer");
+const unlinkAsync = promisify(fs.unlink);
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/users/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const fileFilter = function (req, file, cb) {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    // Accept file
+    cb(null, true);
+  } else {
+    // Reject file
+    cb("Only .JPEG or .PNG extensions are allowed!", false);
+  }
+};
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter,
+});
 
 // @route   POST /api/users
 // @desc    Register a user
@@ -130,5 +161,50 @@ router.put(
     }
   }
 );
+
+// @route     PUT api/users/:id
+// @desc      Update User
+// @access    Private
+router.put("/:id", auth, upload.single("userImage"), async (req, res) => {
+  const { name } = req.body;
+
+  let user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({ msg: "User not found..!" });
+  }
+
+  if (req.file !== undefined) {
+    if (user.imageName !== "") {
+      await unlinkAsync(user.imageName);
+    }
+  }
+
+  let imagePath;
+  let imageName;
+
+  try {
+    const userFields = {};
+
+    userFields.name = name;
+    if (req.file !== undefined) {
+      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      imageName = req.file.path;
+      userFields.userImage = imagePath;
+      userFields.imageName = imageName;
+    }
+
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: userFields },
+      { new: true }
+    );
+
+    res.status(200).json({ msg: "Changes Saved..!" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;

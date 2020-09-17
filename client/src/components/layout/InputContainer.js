@@ -17,7 +17,7 @@ const InputContainer = (props) => {
       <label
         htmlFor={props.name}
         style={labelStyle}
-        className={props.labelClass}
+        className={props.value ? "active" : ""}
       >
         {props.text}
       </label>
@@ -52,7 +52,7 @@ InputContainer.defaultProps = {
   type: "text",
   name: "",
   value: "",
-  text: "default text",
+  text: "",
 };
 
 export default InputContainer;

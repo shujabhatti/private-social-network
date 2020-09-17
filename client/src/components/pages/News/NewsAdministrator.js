@@ -20,8 +20,6 @@ import {
 
 import { hideElem } from "../../../helperFunctions";
 
-import { makeStyles } from "@material-ui/core/styles";
-
 import Moment from "react-moment";
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
@@ -125,8 +123,6 @@ const NewsAdministrator = (props) => {
     }
   };
 
-  const classes = useStyles();
-
   return (
     <Fragment>
       <MainNav selItem={"news-id"} />
@@ -152,6 +148,7 @@ const NewsAdministrator = (props) => {
                             style={{ textAlign: "center", marginTop: "20px" }}
                           >
                             <img
+                              alt='News'
                               src={
                                 showImage
                                   ? showImage
@@ -210,7 +207,6 @@ const NewsAdministrator = (props) => {
                               value={title}
                               text='Title'
                               onChange={onChange}
-                              labelClass={`${title !== "" ? "active" : ""}`}
                             />
                           </div>
                         </div>
@@ -224,9 +220,6 @@ const NewsAdministrator = (props) => {
                               value={description}
                               text='Desciption'
                               onChange={onChange}
-                              labelClass={`${
-                                description !== "" ? "active" : ""
-                              }`}
                               style={{ minHeight: "200px", marginTop: "0px" }}
                             />
                           </div>
@@ -293,14 +286,6 @@ const NewsAdministrator = (props) => {
     </Fragment>
   );
 };
-
-const useStyles = makeStyles((theme) => ({
-  large: {
-    marginTop: theme.spacing(2),
-    width: theme.spacing(18),
-    height: theme.spacing(18),
-  },
-}));
 
 NewsAdministrator.propTypes = {
   current: PropTypes.object.isRequired,

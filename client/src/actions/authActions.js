@@ -6,6 +6,8 @@ import {
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
+  UPDATE_USER,
+  UPDATE_ERROR,
   LOGIN_FAIL,
   CHANGE_PASSWORD,
   CHANGE_PASSWORD_FAIL,
@@ -77,6 +79,40 @@ export const login = (formData) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,
+      payload: err.response.data.msg,
+    });
+  }
+};
+
+// Update User
+export const updateUser = (formData) => async (dispatch) => {
+  const form_data = new FormData();
+
+  for (var key in formData) {
+    form_data.append(key, formData[key]);
+    console.log(key, formData[key]);
+  }
+
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  try {
+    const res = await axios.put(
+      `/api/users/${formData._id}`,
+      form_data,
+      config
+    );
+
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: UPDATE_ERROR,
       payload: err.response.data.msg,
     });
   }

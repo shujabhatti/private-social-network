@@ -4,6 +4,8 @@ import {
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
+  UPDATE_USER,
+  UPDATE_ERROR,
   LOGIN_FAIL,
   CHANGE_PASSWORD,
   CHANGE_PASSWORD_FAIL,
@@ -17,7 +19,7 @@ const initialState = {
   isAuthenticated: null,
   loading: true,
   chgpwdmsg: null,
-  user: null,
+  user: {},
   error: null,
 };
 
@@ -49,8 +51,14 @@ export default (state = initialState, action) => {
         token: null,
         isAuthenticated: false,
         loading: false,
-        user: null,
+        user: {},
         error: action.payload,
+      };
+    case UPDATE_USER:
+      return {
+        ...state,
+        chgpwdmsg: action.payload,
+        loading: false,
       };
     case CHANGE_PASSWORD:
       localStorage.removeItem("token");
@@ -59,7 +67,7 @@ export default (state = initialState, action) => {
         token: null,
         isAuthenticated: false,
         loading: false,
-        user: null,
+        user: {},
         chgpwdmsg: action.payload,
       };
     case CLEAR_CHANGE_PASSWORD:
@@ -72,9 +80,15 @@ export default (state = initialState, action) => {
         ...state,
         error: action.payload,
       };
+    case UPDATE_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
     case CLEAR_ERRORS:
       return {
         ...state,
+        chgpwdmsg: null,
         error: null,
       };
     default:

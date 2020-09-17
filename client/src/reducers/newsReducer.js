@@ -15,7 +15,7 @@ import {
 const initialState = {
   records: [],
   onscreenrecords: [],
-  current: null,
+  current: {},
   filtered: null,
   returnmessage: "",
   error: null,
@@ -72,7 +72,7 @@ export default (state = initialState, action) => {
     case CLEAR_CURRENT_NEWS:
       return {
         ...state,
-        current: null,
+        current: {},
       };
     case CLEAR_ONSCREEN_NEWSS:
       return {
@@ -85,7 +85,7 @@ export default (state = initialState, action) => {
         records: null,
         filtered: null,
         error: null,
-        current: null,
+        current: {},
       };
     case NEWS_ERROR:
       return {

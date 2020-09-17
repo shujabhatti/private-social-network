@@ -107,28 +107,26 @@ router.put("/:id", auth, upload.single("newsImage"), async (req, res) => {
     return res.status(404).json({ msg: "News not found" });
   }
 
-  if (news.imageName) {
-    await unlinkAsync(news.imageName);
+  if (req.file !== undefined) {
+    if (news.imageName !== "") {
+      await unlinkAsync(news.imageName);
+    }
   }
 
   let imagePath;
   let imageName;
-
-  if (req.file !== undefined) {
-    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-    imageName = req.file.path;
-  } else {
-    imagePath = "";
-    imageName = "";
-  }
 
   try {
     const newsFields = {};
 
     newsFields.title = title;
     newsFields.description = description;
-    newsFields.newsImage = imagePath;
-    newsFields.imageName = imageName;
+    if (req.file !== undefined) {
+      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      imageName = req.file.path;
+      newsFields.newsImage = imagePath;
+      newsFields.imageName = imageName;
+    }
     newsFields.update_by = req.user.id;
 
     news = await News.findByIdAndUpdate(
@@ -139,7 +137,7 @@ router.put("/:id", auth, upload.single("newsImage"), async (req, res) => {
 
     res.json(news);
   } catch (err) {
-    console.error(er.message);
+    console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
