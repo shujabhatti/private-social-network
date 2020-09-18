@@ -62,42 +62,29 @@ const Login = (props) => {
       <MainNav selItem={"login-id"} />
       <div className='main'>
         <div className='row'>
-          <div className='col s10 offset-s1 m6 offset-m3'>
+          <div className='col s10 offset-s1 m6 offset-m3 l5 offset-l4 offset-xl4 xl4'>
             <FormLayout>
-              <SubHeader text={"Login User"} />
-              <div className='row'>
-                <div className='col s12 m6 hide-on-small-only'>
-                  <ImageContainer
-                    src={require("../images/login.png")}
-                    alt={"Logo"}
-                    style={{
-                      height: "220px",
-                      width: "80%",
-                      marginLeft: "15px",
-                    }}
+              <SubHeader text={"Login User"} icons={"account_circle"} />
+              <div className='row' style={{ margin: "20px" }}>
+                <form onSubmit={onSubmit}>
+                  <InputContainer
+                    type='email'
+                    name='email'
+                    value={email}
+                    text='Email address'
+                    onChange={onChange}
+                    required
                   />
-                </div>
-                <div className='col s12 m6'>
-                  <form onSubmit={onSubmit}>
-                    <InputContainer
-                      type='email'
-                      name='email'
-                      value={email}
-                      text='Email address'
-                      onChange={onChange}
-                      required
-                    />
-                    <InputContainer
-                      type='password'
-                      name='password'
-                      value={password}
-                      text='Password'
-                      onChange={onChange}
-                      required
-                    />
-                    <FormSubmitButton text={"Login"} />
-                  </form>
-                </div>
+                  <InputContainer
+                    type='password'
+                    name='password'
+                    value={password}
+                    text='Password'
+                    onChange={onChange}
+                    required
+                  />
+                  <FormSubmitButton text={"Login"} />
+                </form>
               </div>
             </FormLayout>
           </div>

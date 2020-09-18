@@ -55,7 +55,7 @@ const Home = (props) => {
               <IconButton
                 aria-label='filters'
                 onClick={() => props.clearCurrent()}
-                style={{ backgroundColor: Color.primaryHex }}
+                style={{ backgroundColor: Color.primaryHex, color: Color.fore }}
               >
                 <i className={`material-icons`}>add</i>
               </IconButton>

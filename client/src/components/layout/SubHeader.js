@@ -5,7 +5,13 @@ import Color from "../constants/Colors";
 const SubHeader = (props) => {
   return (
     <h5 {...props} style={{ ...headingStyle, ...props.style }}>
-      {props.text}
+      <i
+        className='material-icons medium hide-on-small-only'
+        style={{ verticalAlign: "middle" }}
+      >
+        {props.icons}
+      </i>
+      &nbsp;&nbsp; {props.text}
     </h5>
   );
 };

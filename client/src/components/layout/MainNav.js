@@ -3,13 +3,16 @@ import SideBarItem from "./SideBarItem";
 import Color from "../constants/Colors";
 import ImageContainer from "./ImageContainer";
 import InputContainer from "./InputContainer";
+import LabelContainer from "./LabelContainer";
 import FormSubmitButton from "./FormSubmitButton";
-import FormLayout from "./FormLayout";
 
-import { loadUser, updateUser, logout } from "../../actions/authActions";
+import {
+  loadUser,
+  updateUser,
+  clearErrors,
+  logout,
+} from "../../actions/authActions";
 import { clearMembers } from "../../actions/memberActions";
-
-import { titleCase } from "../../helperFunctions";
 
 import {
   Badge,
@@ -21,8 +24,8 @@ import {
 } from "@material-ui/core";
 
 import PopupState, { bindToggle, bindPopper } from "material-ui-popup-state";
-
 import { makeStyles, withStyles } from "@material-ui/core/styles";
+import M from "materialize-css/dist/js/materialize.min.js";
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -43,13 +46,12 @@ const MainNav = (props) => {
     name: "",
     email: "",
     userImage: "",
-    date: "",
   };
 
   const [userInp, setUserInp] = useState(initialInputs);
   const [showImage, setShowImage] = useState("");
 
-  const { name, email, userImage, date } = userInp;
+  const { name, email } = userInp;
 
   const onChange = (e) =>
     setUserInp({ ...userInp, [e.target.name]: e.target.value });
@@ -63,7 +65,8 @@ const MainNav = (props) => {
       setShowImage(user.userImage);
     }
 
-    if (chgpwdmsg === "Changes Saved..!") {
+    if (chgpwdmsg) {
+      props.clearErrors();
       props.loadUser();
     }
 
@@ -90,7 +93,12 @@ const MainNav = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
     props.updateUser(userInp);
-    // props.loadUser();
+  };
+
+  const openSideNav = () => {
+    var elem = document.querySelector(".sidenav");
+    var instance = new M.Sidenav(elem);
+    instance.open();
   };
 
   const onlineUser = (
@@ -125,6 +133,13 @@ const MainNav = (props) => {
                       <Typography className={classes.typography}>
                         <div className='row'>
                           <form onSubmit={onSubmit}>
+                            <LabelContainer
+                              name='email'
+                              value={email}
+                              text=''
+                              skipColon={true}
+                              style={{ display: "block", textAlign: "center" }}
+                            />
                             <Avatar
                               alt={name && name.charAt(0).toUpperCase()}
                               src={showImage}
@@ -189,7 +204,6 @@ const MainNav = (props) => {
 
   const authLinks = (
     <Fragment>
-      <li className='hide-on-large-only'>{onlineUser}</li>
       <SideBarItem id={"home-id"} icon={"groups"} text={"Members"} />
       <SideBarItem
         id={"news-id"}
@@ -253,13 +267,16 @@ const MainNav = (props) => {
               Admin Portal
             </span>
           </h6>
-          <a href='#!' className='sidenav-trigger' data-target='side-nav'>
+          <a
+            href='#!'
+            className='sidenav-trigger'
+            data-target='side-nav'
+            onClick={openSideNav}
+          >
             <i className='material-icons'>menu</i>
           </a>
           <ul class='right'>
-            <li className='hide-on-med-and-down'>
-              {isAuthenticated && onlineUser}
-            </li>
+            <li>{isAuthenticated && onlineUser}</li>
           </ul>
         </div>
       </nav>
@@ -358,6 +375,7 @@ MainNav.propTypes = {
   updateUser: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   clearMembers: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
@@ -376,6 +394,7 @@ const mapDispatchToProps = (dispatch) => {
     updateUser: (obj) => dispatch(updateUser(obj)),
     logout: (obj) => dispatch(logout(obj)),
     clearMembers: () => dispatch(clearMembers()),
+    clearErrors: () => dispatch(clearErrors()),
   };
 };
 

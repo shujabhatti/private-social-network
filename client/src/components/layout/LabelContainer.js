@@ -10,7 +10,7 @@ const LabelContainer = (props) => {
         {...props}
         style={{ ...labelStyle, ...props.style }}
       >
-        {props.text} :&nbsp; {props.value}
+        {props.text} {props.skipColon ? "" : ":"} &nbsp; {props.value}
       </label>
     </Fragment>
   );

@@ -59,52 +59,42 @@ const ChangePassword = (props) => {
       <MainNav selItem={"change-pass-id"} />
       <div className='main'>
         <div className='row'>
-          <div className='col s10 offset-s1 m6 offset-m3'>
+          <div className='col s10 offset-s1 m6 offset-m3 l4 offset-l4'>
             <FormLayout>
-              <SubHeader text={"Change Password"} />
-              <div className='row'>
-                <div className='col s12 m6 hide-on-small-only'>
-                  <ImageContainer
-                    src={require("../images/changepassword.png")}
-                    alt={"Logo"}
-                    style={{
-                      height: "220px",
-                      width: "80%",
-                      marginLeft: "15px",
-                    }}
+              <SubHeader
+                text={"Change Password"}
+                icons={"enhanced_encryption"}
+              />
+              <div className='row' style={{ margin: "20px" }}>
+                <form onSubmit={onSubmit}>
+                  <InputContainer
+                    type='email'
+                    name='email'
+                    value={email}
+                    text='Email address'
+                    onChange={onChange}
+                    required
                   />
-                </div>
-                <div className='col s12 m6'>
-                  <form onSubmit={onSubmit}>
-                    <InputContainer
-                      type='email'
-                      name='email'
-                      value={email}
-                      text='Email address'
-                      onChange={onChange}
-                      required
-                    />
-                    <InputContainer
-                      type='password'
-                      name='password'
-                      value={password}
-                      text='Password'
-                      onChange={onChange}
-                      minLength='6'
-                      required
-                    />
-                    <InputContainer
-                      type='password'
-                      name='newpassword'
-                      value={newpassword}
-                      text='New Password'
-                      onChange={onChange}
-                      minLength='6'
-                      required
-                    />
-                    <FormSubmitButton text={"Change Password"} />
-                  </form>
-                </div>
+                  <InputContainer
+                    type='password'
+                    name='password'
+                    value={password}
+                    text='Password'
+                    onChange={onChange}
+                    minLength='6'
+                    required
+                  />
+                  <InputContainer
+                    type='password'
+                    name='newpassword'
+                    value={newpassword}
+                    text='New Password'
+                    onChange={onChange}
+                    minLength='6'
+                    required
+                  />
+                  <FormSubmitButton text={"Change Password"} />
+                </form>
               </div>
             </FormLayout>
           </div>
