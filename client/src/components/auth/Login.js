@@ -2,7 +2,6 @@ import React, { useState, Fragment, useEffect } from "react";
 import MainNav from "../layout/MainNav";
 import FormLayout from "../layout/FormLayout";
 import SubHeader from "../layout/SubHeader";
-import ImageContainer from "../layout/ImageContainer";
 import InputContainer from "../layout/InputContainer";
 import FormSubmitButton from "../layout/FormSubmitButton";
 
