@@ -23,9 +23,11 @@ const UserSchema = new mongoose.Schema({
   },
   imageName: {
     type: String,
+    default: "",
   },
   userImage: {
     type: String,
+    default: "",
   },
 });
 

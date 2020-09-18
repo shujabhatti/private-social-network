@@ -287,7 +287,7 @@ const MembersAdministrator = (props) => {
                           </div>
                         </div>
                       </div>
-                      <div className='col s12 m7 l6'>
+                      <div className='col s12 m7 l6 xl7'>
                         <div className='col s12'>
                           <InputContainer
                             id='_id'

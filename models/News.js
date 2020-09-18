@@ -27,9 +27,11 @@ const MemberScheme = new mongoose.Schema({
   },
   imageName: {
     type: String,
+    default: "",
   },
   newsImage: {
     type: String,
+    default: "",
   },
 });
 

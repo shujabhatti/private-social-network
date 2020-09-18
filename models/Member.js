@@ -57,9 +57,11 @@ const MemberScheme = new mongoose.Schema({
   },
   imageName: {
     type: String,
+    default: "",
   },
   memberImage: {
     type: String,
+    default: "",
   },
 });
 
