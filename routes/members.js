@@ -79,7 +79,11 @@ router.post("/", auth, upload.single("memberImage"), async (req, res) => {
   let imageName;
 
   if (req.file !== undefined) {
-    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    if (environment === "production") {
+      imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
+    } else {
+      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    }
     imageName = req.file.path;
   } else {
     imagePath = "";
@@ -174,7 +178,11 @@ router.put("/:id", auth, upload.single("memberImage"), async (req, res) => {
     }
     memberFields.acc_status = acc_status;
     if (req.file !== undefined) {
-      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      if (environment === "production") {
+        imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
+      } else {
+        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      }
       imageName = req.file.path;
       memberFields.memberImage = imagePath;
       memberFields.imageName = imageName;
@@ -215,7 +223,11 @@ router.put(
       let imageName;
 
       if (req.file !== undefined) {
-        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+        if (environment === "production") {
+          imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
+        } else {
+          imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+        }
         imageName = req.file.path;
       } else {
         imagePath = "";

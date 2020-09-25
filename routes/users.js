@@ -38,6 +38,8 @@ const upload = multer({
   fileFilter,
 });
 
+const environment = process.env.NODE_ENV;
+
 // @route   POST /api/users
 // @desc    Register a user
 // @access  Public
@@ -188,7 +190,11 @@ router.put("/:id", auth, upload.single("userImage"), async (req, res) => {
 
     userFields.name = name;
     if (req.file !== undefined) {
-      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      if (environment === "production") {
+        imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
+      } else {
+        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      }
       imageName = req.file.path;
       userFields.userImage = imagePath;
       userFields.imageName = imageName;
