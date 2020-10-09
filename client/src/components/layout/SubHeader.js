@@ -5,19 +5,18 @@ import Color from "../constants/Colors";
 const SubHeader = (props) => {
   return (
     <h5 {...props} style={{ ...headingStyle, ...props.style }}>
-      <i
-        className='material-icons medium hide-on-small-only'
-        style={{ verticalAlign: "middle" }}
-      >
-        {props.icons}
-      </i>
-      &nbsp;&nbsp; {props.text}
+      <img
+        src={props.src}
+        alt={props.alt}
+        style={{ height: "40px", verticalAlign: "middle" }}
+      />
+      &nbsp;{props.text}
     </h5>
   );
 };
 
 const headingStyle = {
-  color: Color.dark,
+  color: Color.primaryColor,
   fontSize: "2em",
   textAlign: "center",
 };

@@ -1,23 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import Color from "../constants/Colors";
 
 const SideBarItem = (props) => {
   return (
     <li id={props.id} {...props}>
       <Link to={props.link} onClick={props.onClick}>
-        <i className={`material-icons left`} style={iconStyle}>
-          {props.icon}
-        </i>
+        <i className={`material-icons left`}>{props.icon}</i>
         {props.text}
       </Link>
     </li>
   );
-};
-
-const iconStyle = {
-  color: Color.primaryHex,
 };
 
 SideBarItem.propTypes = {

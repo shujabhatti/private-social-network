@@ -79,7 +79,7 @@ export const login = (formData) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,
-      payload: err.response.data.msg,
+      payload: err,
     });
   }
 };
@@ -90,7 +90,6 @@ export const updateUser = (formData) => async (dispatch) => {
 
   for (var key in formData) {
     form_data.append(key, formData[key]);
-    console.log(key, formData[key]);
   }
 
   const config = {
@@ -133,14 +132,11 @@ export const changePassword = (formData) => async (dispatch) => {
       type: CHANGE_PASSWORD,
       payload: res.data,
     });
-
-    console.log(res.data);
   } catch (err) {
     dispatch({
       type: CHANGE_PASSWORD_FAIL,
       payload: err.response.data.msg,
     });
-    console.log(err.response.data.msg);
   }
 };
 

@@ -7,6 +7,7 @@ import FormSubmitButton from "../layout/FormSubmitButton";
 
 import { register, clearErrors } from "../../actions/authActions";
 
+import BgParticles from "../layout/BgParticles";
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -50,12 +51,16 @@ const Register = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"reg-id"} />
+      <BgParticles />
+      <MainNav selItem={"reg-id"} title={"Admin [Register New]"} />
       <div className='main'>
         <div className='row'>
           <div className='col s10 offset-s1 m6 offset-m3 l5 offset-l4 offset-xl4 xl4'>
             <FormLayout>
-              <SubHeader text={"Register User"} icons={"verified_user"} />
+              <SubHeader
+                text={"Register User"}
+                src={require("../images/register.png")}
+              />
               <div className='row' style={{ margin: "20px" }}>
                 <form onSubmit={onSubmit}>
                   <InputContainer

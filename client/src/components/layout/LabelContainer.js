@@ -17,10 +17,9 @@ const LabelContainer = (props) => {
 };
 
 const labelStyle = {
-  backgroundColor: Color.input,
-  color: Color.dark,
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px",
+  backgroundColor: Color.inputColor,
+  color: Color.darkColor,
+  borderRadius: "3px",
   display: "flex",
   marginTop: "14px",
   padding: "8px",

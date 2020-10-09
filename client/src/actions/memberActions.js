@@ -54,7 +54,6 @@ export const addMember = (formData) => async (dispatch) => {
 
   for (var key in formData) {
     form_data.append(key, formData[key]);
-    console.log(key, formData[key]);
   }
 
   const config = {
@@ -84,7 +83,6 @@ export const updateMember = (formData) => async (dispatch) => {
 
   for (var key in formData) {
     form_data.append(key, formData[key]);
-    console.log(key, formData[key]);
   }
 
   const config = {

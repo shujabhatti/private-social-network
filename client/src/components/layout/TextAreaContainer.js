@@ -28,9 +28,8 @@ const TextAreaContainer = (props) => {
 };
 
 const textAreaStyle = {
-  backgroundColor: Color.input,
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px",
+  backgroundColor: Color.inputColor,
+  borderRadius: "3px",
   paddingLeft: "8px",
   paddingRight: "8px",
   paddingBottom: "8px",

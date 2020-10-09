@@ -11,6 +11,8 @@ import {
   clearErrors,
 } from "../../actions/authActions";
 
+import BgParticles from "../layout/BgParticles";
+
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -55,14 +57,15 @@ const ChangePassword = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"change-pass-id"} />
+      <BgParticles />
+      <MainNav selItem={"change-pass-id"} title={"Admin [Change Password]"} />
       <div className='main'>
         <div className='row'>
           <div className='col s10 offset-s1 m6 offset-m3 l4 offset-l4'>
             <FormLayout>
               <SubHeader
                 text={"Change Password"}
-                icons={"enhanced_encryption"}
+                src={require("../images/changepassword.png")}
               />
               <div className='row' style={{ margin: "20px" }}>
                 <form onSubmit={onSubmit}>
@@ -78,7 +81,7 @@ const ChangePassword = (props) => {
                     type='password'
                     name='password'
                     value={password}
-                    text='Password'
+                    text='Old Password'
                     onChange={onChange}
                     minLength='6'
                     required

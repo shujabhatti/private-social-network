@@ -4,6 +4,7 @@ import FormLayout from "../layout/FormLayout";
 import SubHeader from "../layout/SubHeader";
 import InputContainer from "../layout/InputContainer";
 import FormSubmitButton from "../layout/FormSubmitButton";
+import BgParticles from "../layout/BgParticles";
 
 import {
   login,
@@ -25,15 +26,15 @@ const Login = (props) => {
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
-  const { error, isAuthenticated, chgpwdmsg } = props;
+  const { error, isAuthenticated, returnmessage } = props;
 
   useEffect(() => {
     if (isAuthenticated) {
       props.history.push("/");
     }
 
-    if (chgpwdmsg) {
-      M.toast({ html: `${chgpwdmsg.msg}` });
+    if (returnmessage) {
+      M.toast({ html: `${returnmessage}` });
       props.clearChangePassword();
     }
 
@@ -45,7 +46,7 @@ const Login = (props) => {
       props.clearErrors();
     }
     // eslint-disable-next-line
-  }, [error, isAuthenticated, chgpwdmsg, props.history]);
+  }, [error, isAuthenticated, returnmessage, props.history]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -58,12 +59,16 @@ const Login = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"login-id"} />
+      <BgParticles />
+      <MainNav selItem={"login-id"} title={"Admin [Login]"} />
       <div className='main'>
         <div className='row'>
           <div className='col s10 offset-s1 m6 offset-m3 l5 offset-l4 offset-xl4 xl4'>
             <FormLayout>
-              <SubHeader text={"Login User"} icons={"account_circle"} />
+              <SubHeader
+                text={"Login User"}
+                src={require("../images/login.png")}
+              />
               <div className='row' style={{ margin: "20px" }}>
                 <form onSubmit={onSubmit}>
                   <InputContainer
@@ -95,7 +100,7 @@ const Login = (props) => {
 
 Login.propTypes = {
   error: PropTypes.object.isRequired,
-  chgpwdmsg: PropTypes.object.isRequired,
+  returnmessage: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
@@ -105,7 +110,7 @@ Login.propTypes = {
 const mapStateToProps = (state) => ({
   error: state.auth.error,
   isAuthenticated: state.auth.isAuthenticated,
-  chgpwdmsg: state.auth.chgpwdmsg,
+  returnmessage: state.auth.returnmessage,
 });
 
 const mapDispatchToProps = (dispatch) => {

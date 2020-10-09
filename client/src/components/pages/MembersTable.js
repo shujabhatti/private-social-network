@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import InputContainer from "../layout/InputContainer";
 import ConfirmationDialogue from "../layout/ConfirmationDialogue";
-import SubHeader from "../layout/SubHeader";
 import Color from "../constants/Colors";
 import Moment from "react-moment";
 
@@ -124,34 +123,67 @@ const MembersTable = (props) => {
   return (
     <Fragment>
       {/* Filter Button */}
-      <div className='row' style={{ display: "flex", marginBottom: "0px" }}>
-        <SubHeader
-          text={"Members Records"}
-          style={{ textAlign: "left", paddingLeft: "20px", width: "93%" }}
-        />
-        <div
-          className='row'
-          style={{
-            float: "right",
-            marginTop: "10px",
-          }}
-        >
-          <StyledTooltip title='Filters' placement='top' arrow>
-            <IconButton
-              aria-label='filters'
-              onClick={() => setFilterDialog(true)}
-            >
-              <i className={`material-icons`}>filter_list</i>
-            </IconButton>
-          </StyledTooltip>
+      <div className='row' style={{ marginBottom: "0px", marginRight: "10px" }}>
+        <div className='col m4 l3 hide-on-small-only'>
+          <InputContainer
+            type='text'
+            name='idfil'
+            value={idfil}
+            text='Member ID'
+            onChange={(e) => setIDFil(e.target.value)}
+            onKeyUp={() => onScreenFilter()}
+            onPaste={() => onScreenFilter()}
+            style={inputStyle}
+          />
+        </div>
+        <div className='col m4 l3 hide-on-small-only'>
+          <InputContainer
+            type='text'
+            name='namefil'
+            value={namefil}
+            text='Member Name'
+            onChange={(e) => setNameFil(e.target.value)}
+            onKeyUp={() => onScreenFilter()}
+            onPaste={() => onScreenFilter()}
+            style={inputStyle}
+          />
+        </div>
+        <div className='col m4 l3 hide-on-small-only'>
+          <InputContainer
+            type='text'
+            name='emailfil'
+            value={emailfil}
+            text='Email Address'
+            onChange={(e) => setEmailFil(e.target.value)}
+            onKeyUp={() => onScreenFilter()}
+            onPaste={() => onScreenFilter()}
+            style={inputStyle}
+          />
+        </div>
+        <div className='col s12 m3'>
+          <div
+            className='hide-on-med-and-up'
+            style={{
+              float: "right",
+            }}
+          >
+            <StyledTooltip title='Filters' placement='top' arrow>
+              <IconButton
+                aria-label='filters'
+                onClick={() => setFilterDialog(true)}
+              >
+                <i className={`material-icons`}>filter_list</i>
+              </IconButton>
+            </StyledTooltip>
+          </div>
         </div>
       </div>
       {/* Members Cards */}
       <div className='row'>
         {loading && (
-          <ul class='collapsible popout'>
+          <ul style={listStyle}>
             <li>
-              <div class='collapsible-header'>
+              <div class='collapsible-header' style={listItemStyle}>
                 <i class='material-icons'>schedule</i>
                 <span>Loading...</span>
               </div>
@@ -159,9 +191,9 @@ const MembersTable = (props) => {
           </ul>
         )}
         {!loading && members.length === 0 ? (
-          <ul class='collapsible popout'>
+          <ul style={listStyle}>
             <li>
-              <div class='collapsible-header'>
+              <div class='collapsible-header' style={listItemStyle}>
                 <i class='material-icons'>error_outline</i>
                 <span>No record found....</span>
               </div>
@@ -170,7 +202,7 @@ const MembersTable = (props) => {
         ) : (
           onscreenmembers.map((obj) => (
             <div className='col s12 m6 l4'>
-              <Card className={classes.card}>
+              <Card className={classes.card} style={{ boxShadow: "none" }}>
                 <CardHeader
                   avatar={
                     <Avatar
@@ -179,26 +211,25 @@ const MembersTable = (props) => {
                       className={classes.large}
                     />
                   }
-                  title={obj.name}
-                  subheader={obj.email}
+                  title={
+                    obj.name.length > 40
+                      ? obj.name.substring(0, 40) + "..."
+                      : obj.name
+                  }
+                  subheader={
+                    obj.email.length > 40
+                      ? obj.email.substring(0, 40) + "..."
+                      : obj.email
+                  }
                 />
                 <CardContent>
-                  <Typography
-                    variant='body5'
-                    component='p'
-                    className={classes.right}
-                  >
-                    <span style={{ fontWeight: "bold" }}>
-                      {obj.member_type}
-                    </span>
-                  </Typography>
-                  <br />
                   <Typography
                     variant='body2'
                     color='textSecondary'
                     component='p'
                   >
-                    Roll No: {obj._id}
+                    <span style={{ fontWeight: "bold" }}>Roll No:</span>{" "}
+                    {obj._id}
                   </Typography>
                   <Typography
                     variant='body2'
@@ -291,10 +322,9 @@ const MembersTable = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    background: Color.input,
-    marginLeft: 10,
-    marginRight: 10,
+    background: Color.itemColor,
     marginBottom: 20,
+    borderRadius: 10,
   },
   right: {
     float: "right",
@@ -316,9 +346,20 @@ const StyledTooltip = withStyles({
 })(Tooltip);
 
 const inputStyle = {
-  backgroundColor: "transparent",
+  backgroundColor: Color.inputColor,
   borderStyle: "none",
   borderBottom: "1px solid black",
+};
+
+const listItemStyle = {
+  boxShadow: "none",
+  backgroundColor: Color.itemColor,
+  borderRadius: "10px",
+};
+
+const listStyle = {
+  marginLeft: "10px",
+  marginRight: "10px",
 };
 
 MembersTable.propTypes = {

@@ -1,12 +1,13 @@
 export default {
-  primaryHex: "#cd84f1",
-  successHex: "#5cb85c",
-  warningHex: "#f0ad4e",
-  dangerHex: "#d9534f",
-  lightHex: "#ecf0f1",
-  accent: "#c717fc",
-  shadow: "#d0d0d0",
-  input: "#f0f0f0",
-  fore: "white",
-  dark: "#000",
+  backgorundColor: "#FFFFFF", // "#FAFAFA"
+  sideNavColor: "#F5F5F5",
+  inputColor: "#E8EAED",
+  itemColor: "#F5F5F5", // "#FAFAFA"
+  primaryColor: "#1A73E8",
+  selectedColor: "#ECECEC",
+  lightColor: "#FFFFFF", // "#ECF0F1"
+  darkColor: "#000000",
+  successColor: "#5CB85C",
+  warningColor: "#F0AD4E",
+  dangerColor: "#D9534F",
 };

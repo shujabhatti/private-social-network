@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import MainNav from "../../layout/MainNav";
-import SubHeader from "../../layout/SubHeader";
 import FormLayout from "../../layout/FormLayout";
 import InputContainer from "../../layout/InputContainer";
 import LabelContainer from "../../layout/LabelContainer";
@@ -125,17 +124,17 @@ const NewsAdministrator = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"news-id"} />
+      <MainNav
+        selItem={"news-id"}
+        title={`News Administrator - [${current ? "Update News" : "Add News"}]`}
+        title1={`${current ? "Update News" : "Add News"}`}
+        title2={"News"}
+        showUserAvatar={false}
+      />
       <div className='main'>
         <div className='row'>
-          <SubHeader
-            text={`News Administrator - [${
-              current ? "Update News" : "Add News"
-            }]`}
-            style={{ textAlign: "left", paddingLeft: "20px" }}
-          />
           <div className='row'>
-            <div className='col s12 offset-l2 l8'>
+            <div className='col xs12 s10 offset-s1 m10 offset-m1 l10 offset-l1 xl8 offset-xl2'>
               <FormLayout>
                 <div className='row'>
                   <form onSubmit={onSubmit}>
@@ -250,16 +249,16 @@ const NewsAdministrator = (props) => {
                               marginLeft: "20px",
                               marginRight: "10px",
                               width: "auto",
-                              backgroundColor: Color.primaryHex,
+                              backgroundColor: Color.primaryColor,
                             }}
                           />
                           <ButtonContainer
-                            icons={"close"}
                             text={"Close"}
                             link={"/news"}
                             onClick={() => props.clearCurrent()}
                             style={{
-                              color: Color.dangerHex,
+                              color: Color.dangerColor,
+                              fontWeight: "bold",
                               backgroundColor: "transparent",
                               width: "auto",
                               marginLeft: "20px",

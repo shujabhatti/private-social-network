@@ -62,6 +62,13 @@ footer {
 
 #side-nav {
   width: 250px;
+  box-shadow: none;
+}
+
+.main,
+#main {
+  background-color: #ffffff;
+  min-height: 90vh;
 }
 
 /* Main Div Styling Ends Here */

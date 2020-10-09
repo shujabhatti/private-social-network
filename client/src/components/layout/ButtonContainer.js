@@ -21,8 +21,8 @@ const ButtonContainer = (props) => {
 };
 
 const buttonStyle = {
-  color: Color.fore,
-  backgroundColor: Color.primaryHex,
+  color: Color.lightColor,
+  backgroundColor: Color.primaryColor,
   width: "100%",
 };
 

@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import MainNav from "../layout/MainNav";
-import SubHeader from "../layout/SubHeader";
 import FormLayout from "../layout/FormLayout";
 import InputContainer from "../layout/InputContainer";
 import LabelContainer from "../layout/LabelContainer";
@@ -19,6 +18,7 @@ import {
   clearCurrent,
   clearErrors,
 } from "../../actions/memberActions";
+import { getGroupsList } from "../../actions/groupActions";
 
 import { Avatar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,20 +31,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 const MembersAdministrator = (props) => {
-  const memberTypeDropdown = [
-    {
-      text: "HOD",
-      value: "HOD",
-    },
-    {
-      text: "Teacher",
-      value: "Teacher",
-    },
-    {
-      text: "Student",
-      value: "Student",
-    },
-  ];
+  const memberTypeDropdown = [];
 
   const accStatusDropdown = [
     {
@@ -102,7 +89,18 @@ const MembersAdministrator = (props) => {
     // eslint-disable-next-line
   }, []);
 
+  const convertGroupsListObj = () => {
+    for (let obj of props.groups) {
+      memberTypeDropdown.push({
+        value: obj._id,
+        text: obj.title,
+      });
+    }
+    return memberTypeDropdown;
+  };
+
   useEffect(() => {
+    props.getGroupsList();
     if (error) {
       M.toast({ html: `${error}` });
       props.clearErrors();
@@ -230,21 +228,25 @@ const MembersAdministrator = (props) => {
     }
   };
 
+  convertGroupsListObj();
+
   //#endregion
 
   const classes = useStyles();
 
   return (
     <Fragment>
-      <MainNav selItem={"home-id"} />
+      <MainNav
+        selItem={"home-id"}
+        title={`Members Administrator - [${
+          current ? "Update Member" : "Add New Member"
+        }]`}
+        title1={`${current ? "Update Member" : "Add New Member"}`}
+        title2={"Members"}
+        showUserAvatar={false}
+      />
       <div className='main'>
         <div className='row'>
-          <SubHeader
-            text={`Members Administrator - [${
-              current ? "Update Member" : "Add New Member"
-            }]`}
-            style={{ textAlign: "left", paddingLeft: "20px" }}
-          />
           <div className='row'>
             <div className='col xs12 s10 offset-s1 m10 offset-m1 l10 offset-l1 xl8 offset-xl2'>
               <FormLayout>
@@ -253,18 +255,18 @@ const MembersAdministrator = (props) => {
                     <div className='row'>
                       <div className='col s12 offset-m1 m3 offset-l1 l4 offset-xl1 xl3'>
                         {/* Image Section */}
-                        <div style={{ marginLeft: "10px" }}>
-                          <Avatar
-                            alt={name && name.charAt(0).toUpperCase()}
-                            src={showImage}
-                            className={classes.large}
-                          />
-                        </div>
+                        <Avatar
+                          alt={name && name.charAt(0).toUpperCase()}
+                          src={showImage}
+                          className={classes.large}
+                        />
                         <div>
                           <div
                             className='input-field'
                             id='change-image-container'
-                            style={{ marginLeft: "10px" }}
+                            style={{
+                              textAlign: "center",
+                            }}
                           >
                             <input
                               id='file'
@@ -281,8 +283,13 @@ const MembersAdministrator = (props) => {
                                 display: "contents",
                               }}
                             >
-                              <i className='material-icons left'>edit</i>Select
-                              Image
+                              <i
+                                className='material-icons'
+                                style={{ verticalAlign: "bottom" }}
+                              >
+                                edit
+                              </i>
+                              Select Image
                             </label>
                           </div>
                         </div>
@@ -364,7 +371,6 @@ const MembersAdministrator = (props) => {
                           data-position='top'
                           data-tooltip='Edit Password'
                           size={"small"}
-                          color={Color.shadow}
                         />
                       </div>
                     </div>
@@ -422,6 +428,7 @@ const MembersAdministrator = (props) => {
                     {/* Student Data Section */}
                     <div className='col s5 offset-m1 m2'>
                       <FormSubmitButton
+                        icons={`${current ? "edit" : "add"}`}
                         text={`${current ? "Update" : "Add"}`}
                       />
                     </div>
@@ -432,7 +439,8 @@ const MembersAdministrator = (props) => {
                         onClick={() => props.clearCurrent()}
                         style={{
                           backgroundColor: "transparent",
-                          color: Color.dangerHex,
+                          color: Color.dangerColor,
+                          fontWeight: "bold",
                           width: "100%",
                         }}
                       />
@@ -460,11 +468,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     width: theme.spacing(18),
     height: theme.spacing(18),
+    margin: "auto",
   },
 }));
 
 MembersAdministrator.propTypes = {
   current: PropTypes.object.isRequired,
+  groups: PropTypes.array.isRequired,
   returnmessage: PropTypes.string.isRequired,
   loadUser: PropTypes.func.isRequired,
   addMember: PropTypes.func.isRequired,
@@ -475,6 +485,7 @@ MembersAdministrator.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  groups: state.groups.records,
   current: state.member.current,
   error: state.member.error,
   returnmessage: state.member.returnmessage,
@@ -483,6 +494,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     loadUser: () => dispatch(loadUser()),
+    getGroupsList: () => dispatch(getGroupsList()),
     addMember: (obj) => dispatch(addMember(obj)),
     updateMember: (obj) => dispatch(updateMember(obj)),
     changePassword: (obj) => dispatch(changePassword(obj)),

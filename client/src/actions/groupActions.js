@@ -1,54 +1,54 @@
 import axios from "axios";
 import {
-  GET_NEWSS,
-  ADD_NEWS,
-  DELETE_NEWS,
-  SET_CURRENT_NEWS,
-  CLEAR_CURRENT_NEWS,
-  UPDATE_NEWS,
-  CLEAR_NEWSS,
-  NEWS_ERROR,
-  CLEAR_NEWS_ERROR,
-  SET_ONSCREEN_NEWSS,
-  CLEAR_ONSCREEN_NEWSS,
+  GET_GROUPS,
+  ADD_GROUP,
+  DELETE_GROUP,
+  SET_CURRENT_GROUP,
+  CLEAR_CURRENT_GROUP,
+  UPDATE_GROUP,
+  CLEAR_GROUPS,
+  GROUP_ERROR,
+  CLEAR_GROUP_ERROR,
+  SET_ONSCREEN_GROUPS,
+  CLEAR_ONSCREEN_GROUPS,
 } from "./types";
 
-// Get All News
-export const getNewsList = () => async (dispatch) => {
+// Get All Groups
+export const getGroupsList = () => async (dispatch) => {
   try {
-    const res = await axios.get("/api/news");
+    const res = await axios.get("/api/groups");
 
     dispatch({
-      type: GET_NEWSS,
+      type: GET_GROUPS,
       payload: res.data,
     });
   } catch (err) {
     dispatch({
-      type: NEWS_ERROR,
+      type: GROUP_ERROR,
       payload: err.response.msg,
     });
   }
 };
 
-// On Screen News
-export const setOnScreenNews = (obj) => async (dispatch) => {
+// On Screen Group
+export const setOnScreenGroups = (obj) => async (dispatch) => {
   try {
     const data = await obj;
 
     dispatch({
-      type: SET_ONSCREEN_NEWSS,
+      type: SET_ONSCREEN_GROUPS,
       payload: data,
     });
   } catch (err) {
     dispatch({
-      type: NEWS_ERROR,
+      type: GROUP_ERROR,
       payload: err.response.statusText,
     });
   }
 };
 
-// Add News
-export const addNews = (formData) => async (dispatch) => {
+// Add Group
+export const addGroup = (formData) => async (dispatch) => {
   const form_data = new FormData();
 
   for (var key in formData) {
@@ -62,22 +62,22 @@ export const addNews = (formData) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.post("/api/news", form_data, config);
+    const res = await axios.post("/api/groups", form_data, config);
 
     dispatch({
-      type: ADD_NEWS,
+      type: ADD_GROUP,
       payload: res.data,
     });
   } catch (err) {
     dispatch({
-      type: NEWS_ERROR,
+      type: GROUP_ERROR,
       payload: err.response.data.msg,
     });
   }
 };
 
-// Update News
-export const updateNews = (formData) => async (dispatch) => {
+// Update Group
+export const updateGroup = (formData) => async (dispatch) => {
   const form_data = new FormData();
 
   for (var key in formData) {
@@ -91,22 +91,26 @@ export const updateNews = (formData) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.put(`/api/news/${formData._id}`, form_data, config);
+    const res = await axios.put(
+      `/api/groups/${formData._id}`,
+      form_data,
+      config
+    );
 
     dispatch({
-      type: UPDATE_NEWS,
+      type: UPDATE_GROUP,
       payload: res.data,
     });
   } catch (err) {
     dispatch({
-      type: NEWS_ERROR,
+      type: GROUP_ERROR,
       payload: err.response.data.msg,
     });
   }
 };
 
-// Delete News
-export const deleteNews = (_id) => async (dispatch) => {
+// Delete Group
+export const deleteGroup = (_id) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -114,15 +118,15 @@ export const deleteNews = (_id) => async (dispatch) => {
   };
 
   try {
-    await axios.delete(`/api/news/${_id}`, config);
+    await axios.delete(`/api/groups/${_id}`, config);
 
     dispatch({
-      type: DELETE_NEWS,
+      type: DELETE_GROUP,
       payload: _id,
     });
   } catch (err) {
     dispatch({
-      type: NEWS_ERROR,
+      type: GROUP_ERROR,
       payload: err.response.msg,
     });
   }
@@ -131,7 +135,7 @@ export const deleteNews = (_id) => async (dispatch) => {
 // Set Current
 export const setCurrent = (formData) => (dispatch) => {
   dispatch({
-    type: SET_CURRENT_NEWS,
+    type: SET_CURRENT_GROUP,
     payload: formData,
   });
 };
@@ -139,27 +143,27 @@ export const setCurrent = (formData) => (dispatch) => {
 // Clear Current
 export const clearCurrent = () => (dispatch) => {
   dispatch({
-    type: CLEAR_CURRENT_NEWS,
+    type: CLEAR_CURRENT_GROUP,
   });
 };
 
-// Clear News
-export const clearNews = () => async (dispatch) => {
+// Clear Groups
+export const clearGroups = () => async (dispatch) => {
   dispatch({
-    type: CLEAR_NEWSS,
+    type: CLEAR_GROUPS,
   });
 };
 
 // Clear Errors
 export const clearErrors = () => async (dispatch) => {
   dispatch({
-    type: CLEAR_NEWS_ERROR,
+    type: CLEAR_GROUP_ERROR,
   });
 };
 
-// Clear On Screen News
-export const clearOnScreenNews = () => async (dispatch) => {
+// Clear On Screen Groups
+export const clearOnScreenGroups = () => async (dispatch) => {
   dispatch({
-    type: CLEAR_ONSCREEN_NEWSS,
+    type: CLEAR_ONSCREEN_GROUPS,
   });
 };

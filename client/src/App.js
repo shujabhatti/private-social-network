@@ -6,10 +6,12 @@ import MembersAdministrator from "./components/pages/MembersAdministrator";
 import Home from "./components/pages/Home";
 import News from "./components/pages/News/News";
 import NewsAdministrator from "./components/pages/News/NewsAdministrator";
-import About from "./components/pages/About";
+import Groups from "./components/pages/Groups/Groups";
+import GroupAdministrator from "./components/pages/Groups/GroupAdministrator";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
+import setMemberAuthToken from "./utils/setMemberAuthToken";
 import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css/dist/js/materialize.min.js";
 import "./App.css";
@@ -18,6 +20,10 @@ import store from "./store";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
+}
+
+if (localStorage.membertoken) {
+  setMemberAuthToken(localStorage.membertoken);
 }
 
 const App = () => {
@@ -37,6 +43,12 @@ const App = () => {
               path='/news-administrator'
               component={NewsAdministrator}
             />
+            <PrivateRoute exact path='/groups' component={Groups} />
+            <PrivateRoute
+              exact
+              path='/group-administrator'
+              component={GroupAdministrator}
+            />
             <PrivateRoute
               exact
               path='/change-password'
@@ -47,7 +59,6 @@ const App = () => {
               path='/member-administrator'
               component={MembersAdministrator}
             />
-            <Route exact path='/about' component={About} />
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
           </Switch>

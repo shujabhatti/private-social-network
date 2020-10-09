@@ -39,11 +39,16 @@ const Home = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"home-id"} />
+      <MainNav
+        selItem={"home-id"}
+        title={"Members Management"}
+        title1={"Members Management"}
+        title2={"Members"}
+      />
       <div className='main'>
         <div className='row'>
           <div className='col s12 xl10 offset-xl1'>
-            <MembersTable tbData={members} />
+            <MembersTable tbData={members ? members : []} />
           </div>
         </div>
         <div
@@ -55,7 +60,10 @@ const Home = (props) => {
               <IconButton
                 aria-label='filters'
                 onClick={() => props.clearCurrent()}
-                style={{ backgroundColor: Color.primaryHex, color: Color.fore }}
+                style={{
+                  backgroundColor: Color.primaryColor,
+                  color: Color.lightColor,
+                }}
               >
                 <i className={`material-icons`}>add</i>
               </IconButton>

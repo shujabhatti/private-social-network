@@ -6,39 +6,37 @@ import { Link } from "react-router-dom";
 
 import { loadUser } from "../../../actions/authActions";
 import {
-  getNewsList,
-  setOnScreenNews,
-  clearNews,
+  getGroupsList,
+  setOnScreenGroups,
+  clearGroups,
   clearCurrent,
   setCurrent,
-  deleteNews,
+  deleteGroup,
   clearErrors,
-} from "../../../actions/newsActions";
+} from "../../../actions/groupActions";
+
+import Moment from "react-moment";
 
 import {
   TablePagination,
   Tooltip,
   IconButton,
-  Card,
+  Avatar,
   CardHeader,
-  CardContent,
-  CardActions,
-  Typography,
 } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 
-import Moment from "react-moment";
 import M from "materialize-css/dist/js/materialize.min.js";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Color from "../../constants/Colors";
 
-const News = (props) => {
+const Groups = (props) => {
   const [titlefil, setTitleFil] = useState("");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [confirmDialog, setConfirmDialog] = useState(false);
-  const [currentNewsID, setCurrentNewsID] = useState("");
+  const [currentGroupID, setCurrentGroupID] = useState("");
 
   const {
     isAuthenticated,
@@ -54,9 +52,9 @@ const News = (props) => {
 
     props.loadUser();
     if (isAuthenticated) {
-      props.getNewsList();
+      props.getGroupsList();
     } else {
-      props.clearNews();
+      props.clearGroups();
     }
 
     if (returnmessage) {
@@ -85,21 +83,21 @@ const News = (props) => {
     ];
 
     if (titlefil === "") {
-      props.setOnScreenNews(records);
+      props.setOnScreenGroups(records);
     } else {
       const result = records.filter((d) => filterCombiner(d, filterValArray));
-      props.setOnScreenNews(result);
+      props.setOnScreenGroups(result);
     }
   };
 
   const onEdit = (obj) => {
     props.setCurrent(obj);
-    props.history.push("/news-administrator");
+    props.history.push("/group-administrator");
   };
 
   const onDelete = (id) => {
     setConfirmDialog(true);
-    setCurrentNewsID(id);
+    setCurrentGroupID(id);
   };
 
   const onConfirmDialogClose = () => {
@@ -107,7 +105,7 @@ const News = (props) => {
   };
 
   const onConfirm = () => {
-    props.deleteNews(currentNewsID);
+    props.deleteGroup(currentGroupID);
     onConfirmDialogClose();
   };
 
@@ -128,7 +126,7 @@ const News = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"news-id"} title={"News Management"} />
+      <MainNav selItem={"group-id"} title={"Groups Management"} />
       <div className='main'>
         <div className='row'>
           <div className='row'>
@@ -140,7 +138,7 @@ const News = (props) => {
                     type='text'
                     name='titlefil'
                     value={titlefil}
-                    text='Search by news title.....'
+                    text='Search by group title.....'
                     onChange={(e) => setTitleFil(e.target.value)}
                     onKeyUp={() => onScreenFilter()}
                     onPaste={() => onScreenFilter()}
@@ -148,107 +146,114 @@ const News = (props) => {
                   />
                 </div>
               </div>
-              {/* News Cards */}
+              {/* Groups List */}
               <div className='row'>
-                {loading && (
-                  <ul style={listStyle}>
+                <ul style={listStyle}>
+                  {loading && (
                     <li>
                       <div class='collapsible-header' style={listItemStyle}>
                         <i class='material-icons'>schedule</i>
                         <span>Loading...</span>
                       </div>
                     </li>
-                  </ul>
-                )}
-                {!loading && records.length === 0 ? (
-                  <ul style={listStyle}>
+                  )}
+                  {!loading && records.length === 0 ? (
                     <li>
                       <div class='collapsible-header' style={listItemStyle}>
                         <i class='material-icons'>error_outline</i>
                         <span>No record found....</span>
                       </div>
                     </li>
-                  </ul>
-                ) : (
-                  onscreenrecords
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((obj) => (
-                      <div className='col s12 m6 l4'>
-                        <Card
-                          className={classes.card}
-                          style={{ boxShadow: "none" }}
-                        >
-                          <CardHeader
-                            title={
-                              <span style={titleStyle}>
-                                {obj.title.length > 25
-                                  ? obj.title.substring(0, 25) + "..."
-                                  : obj.title}
-                              </span>
-                            }
-                          />
-                          <CardContent className={classes.cardContent}>
-                            <Typography
-                              variant='body2'
-                              color='textSecondary'
-                              component='p'
-                              align={"right"}
-                              className={classes.dateStyle}
-                            >
-                              <Moment format='MMMM do YYYY, h:mm:ss a'>
-                                {new Date(obj.create_date)}
-                              </Moment>
-                            </Typography>
-                            <Typography
-                              variant='body2'
-                              color='textSecondary'
-                              component='p'
-                            >
-                              <span style={{ fontWeight: "bold" }}>
-                                Description:
-                              </span>{" "}
-                              {obj.description.length > 250
-                                ? obj.description.substring(0, 250) + "..."
-                                : obj.description}
-                            </Typography>
-                          </CardContent>
-                          <CardActions disableSpacing>
-                            <IconButton
-                              aria-label='add to favorites'
-                              onClick={onEdit.bind(this, obj)}
-                            >
-                              <i className='material-icons'>edit</i>
-                            </IconButton>
-                            <IconButton
-                              aria-label='add to favorites'
-                              onClick={onDelete.bind(this, obj._id)}
-                            >
-                              <i className='material-icons'>delete</i>
-                            </IconButton>
-                          </CardActions>
-                        </Card>
-                      </div>
-                    ))
-                )}
+                  ) : (
+                    onscreenrecords
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((obj) => (
+                        <li className='collection-item' style={listItemStyle}>
+                          <div
+                            className='row'
+                            style={{ height: "55px", marginBottom: "10px" }}
+                          >
+                            <div className='col s10'>
+                              <CardHeader
+                                style={{
+                                  padding: "0px",
+                                  paddingTop: "8px",
+                                  paddingLeft: "15px",
+                                }}
+                                avatar={
+                                  <Avatar
+                                    alt={
+                                      obj.title
+                                        ? obj.title.charAt(0).toUpperCase()
+                                        : "X"
+                                    }
+                                    src={obj.groupImage}
+                                    className={classes.large}
+                                  />
+                                }
+                                title={
+                                  <span className='grey-text'>
+                                    <span
+                                      onClick={onEdit.bind(this, obj)}
+                                      style={titleStyle}
+                                    >
+                                      {obj.title.length > 40
+                                        ? obj.title.substring(0, 40) + "..."
+                                        : obj.title}
+                                    </span>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span className='black-text'>
+                                      Created on
+                                    </span>{" "}
+                                    <Moment format='MMMM Do YYYY, h:mm:ss a'>
+                                      {obj.create_date}
+                                    </Moment>
+                                  </span>
+                                }
+                              />
+                            </div>
+                            <div className='col s2'>
+                              <a
+                                href='#!'
+                                onClick={onDelete.bind(this, obj._id)}
+                                className='secondary-content'
+                                style={{
+                                  paddingTop: "10px",
+                                  paddingRight: "15px",
+                                }}
+                              >
+                                <i className='material-icons grey-text'>
+                                  delete
+                                </i>
+                              </a>
+                            </div>
+                          </div>
+                        </li>
+                      ))
+                  )}
+                </ul>
+                <TablePagination
+                  rowsPerPageOptions={[
+                    5,
+                    10,
+                    25,
+                    50,
+                    100,
+                    { value: onscreenrecords.length, label: "All" },
+                  ]}
+                  component='div'
+                  count={onscreenrecords.length}
+                  labelRowsPerPage={"Groups Per Page:"}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  style={{ margin: "0 24px" }}
+                />
               </div>
-              <TablePagination
-                rowsPerPageOptions={[
-                  5,
-                  10,
-                  25,
-                  50,
-                  100,
-                  { value: onscreenrecords.length, label: "All" },
-                ]}
-                component='div'
-                count={onscreenrecords.length}
-                labelRowsPerPage={"News Per Page:"}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                style={{ margin: "0 24px" }}
-              />
             </div>
           </div>
         </div>
@@ -256,8 +261,8 @@ const News = (props) => {
           className='row'
           style={{ position: "absolute", bottom: "10px", right: "20px" }}
         >
-          <StyledTooltip title='Add News' placement='left' arrow>
-            <Link to={"/news-administrator"}>
+          <StyledTooltip title='Add Group' placement='left' arrow>
+            <Link to={"/group-administrator"}>
               <IconButton
                 aria-label='filters'
                 onClick={() => props.clearCurrent()}
@@ -274,7 +279,7 @@ const News = (props) => {
         <ConfirmationDialogue
           open={confirmDialog}
           onConfirmDialogClose={onConfirmDialogClose}
-          title='Delete News'
+          title='Delete Group'
           content='Are you sure you want to delete this?'
           onConfirm={onConfirm}
         />
@@ -284,17 +289,9 @@ const News = (props) => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  card: {
-    background: Color.itemColor,
-    marginBottom: 20,
-    borderRadius: 10,
-  },
-  cardContent: {
-    height: 150,
-  },
-  dateStyle: {
-    marginBottom: theme.spacing(2),
-    fontWeight: "bold",
+  large: {
+    width: theme.spacing(5),
+    height: theme.spacing(5),
   },
 }));
 
@@ -326,15 +323,15 @@ const listStyle = {
   marginRight: "10px",
 };
 
-News.propTypes = {
+Groups.propTypes = {
   loadUser: PropTypes.func.isRequired,
-  getNewsList: PropTypes.func.isRequired,
-  setOnScreenNews: PropTypes.func.isRequired,
+  getGroupsList: PropTypes.func.isRequired,
+  setOnScreenGroups: PropTypes.func.isRequired,
   setCurrent: PropTypes.func.isRequired,
-  deleteNews: PropTypes.func.isRequired,
+  deleteGroup: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
   clearCurrent: PropTypes.func.isRequired,
-  clearNews: PropTypes.func.isRequired,
+  clearGroups: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
   returnmessage: PropTypes.string.isRequired,
@@ -346,23 +343,23 @@ News.propTypes = {
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.auth.error,
-  records: state.news.records,
-  loading: state.news.loading,
-  onscreenrecords: state.news.onscreenrecords,
-  returnmessage: state.news.returnmessage,
+  records: state.groups.records,
+  loading: state.groups.loading,
+  onscreenrecords: state.groups.onscreenrecords,
+  returnmessage: state.groups.returnmessage,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     loadUser: () => dispatch(loadUser()),
-    getNewsList: () => dispatch(getNewsList()),
-    setOnScreenNews: (obj) => dispatch(setOnScreenNews(obj)),
+    getGroupsList: () => dispatch(getGroupsList()),
+    setOnScreenGroups: (obj) => dispatch(setOnScreenGroups(obj)),
     setCurrent: (obj) => dispatch(setCurrent(obj)),
-    deleteNews: (id) => dispatch(deleteNews(id)),
+    deleteGroup: (id) => dispatch(deleteGroup(id)),
     clearErrors: () => dispatch(clearErrors()),
     clearCurrent: () => dispatch(clearCurrent()),
-    clearNews: () => dispatch(clearNews()),
+    clearGroups: () => dispatch(clearGroups()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(News);
+export default connect(mapStateToProps, mapDispatchToProps)(Groups);

@@ -32,9 +32,8 @@ const SelectContainer = (props) => {
 };
 
 const selectStyle = {
-  backgroundColor: Color.input,
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px",
+  backgroundColor: Color.inputColor,
+  borderRadius: "3px",
   height: "35px",
   paddingLeft: "8px",
   paddingBottom: "8px",

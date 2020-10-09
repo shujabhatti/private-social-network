@@ -18,7 +18,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: null,
   loading: true,
-  chgpwdmsg: null,
+  returnmessage: "",
   user: {},
   error: null,
 };
@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
     case UPDATE_USER:
       return {
         ...state,
-        chgpwdmsg: action.payload,
+        returnmessage: action.payload.msg,
         loading: false,
       };
     case CHANGE_PASSWORD:
@@ -68,12 +68,12 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loading: false,
         user: {},
-        chgpwdmsg: action.payload,
+        returnmessage: action.payload.msg,
       };
     case CLEAR_CHANGE_PASSWORD:
       return {
         ...state,
-        chgpwdmsg: null,
+        returnmessage: "",
       };
     case CHANGE_PASSWORD_FAIL:
       return {
@@ -88,7 +88,7 @@ export default (state = initialState, action) => {
     case CLEAR_ERRORS:
       return {
         ...state,
-        chgpwdmsg: null,
+        returnmessage: "",
         error: null,
       };
     default:

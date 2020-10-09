@@ -4,8 +4,10 @@ const { promisify } = require("util");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/auth");
+const authMember = require("../middleware/authMember");
 const { check, validationResult } = require("express-validator");
 const Member = require("../models/Member");
+const Group = require("../models/Group");
 const multer = require("multer");
 const unlinkAsync = promisify(fs.unlink);
 
@@ -44,6 +46,7 @@ router.get("/", auth, async (req, res) => {
     const members = await Member.find({}).sort({
       create_date: -1,
     });
+
     res.json(members);
   } catch (err) {
     console.error(err.message);
@@ -318,5 +321,130 @@ router.delete("/:id", auth, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+// @route   GET /api/members/readmembers
+// @des     Read all members
+// @access  Private
+router.get("/readmembers", authMember, async (req, res) => {
+  try {
+    const currentMember = await Member.findById(req.member.id);
+
+    const members = await Member.find({
+      member_type: currentMember.member_type,
+    }).sort({
+      create_date: -1,
+    });
+
+    res.json(members);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route     PUT api/members/update-member/:id
+// @desc      Update member info by member
+// @access    Private
+router.put(
+  "/update-member/:id",
+  authMember,
+  upload.single("memberImage"),
+  async (req, res) => {
+    const { name, email } = req.body;
+
+    let member = await Member.findById(req.member.id);
+
+    if (!member) {
+      return res.status(404).json({ msg: "Member not found..!" });
+    }
+
+    if (req.file !== undefined) {
+      if (member.imageName !== "") {
+        await unlinkAsync(member.imageName);
+      }
+    }
+
+    let imagePath;
+    let imageName;
+
+    try {
+      const memberFields = {};
+
+      memberFields.name = name;
+      memberFields.email = email;
+      if (req.file !== undefined) {
+        if (environment === "production") {
+          imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
+        } else {
+          imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+        }
+        imageName = req.file.path;
+        memberFields.memberImage = imagePath;
+        memberFields.imageName = imageName;
+      }
+
+      member = await Member.findByIdAndUpdate(
+        req.params.id,
+        { $set: memberFields },
+        { new: true }
+      );
+
+      res.status(200).json({ msg: "Changes Saved..!" });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route   PUT /api/members/member-change-password/:id
+// @desc    Change member password by member
+// @access  Private
+router.put(
+  "/member-change-password/:id",
+  authMember,
+  async (req, res) => {
+    
+    const { _id, password, newpassword } = req.body;
+
+    try {
+      let member = await Member.findById(req.member.id);
+
+      if (!member) {
+        return res.status(404).json({ msg: "Member not found..!" });
+      }
+
+      const memberfullinfo = await Member.findById(req.member.id);
+
+      if (memberfullinfo._id !== _id) {
+        return res.status(400).json({
+          msg: "Invalid ID..!",
+        });
+      }
+
+      const isMatch = await bcrypt.compare(password, memberfullinfo.password);
+
+      if (!isMatch) {
+        return res.status(400).json({ msg: "Invalid Password..!" });
+      }
+
+      const memberFields = {};
+
+      const salt = await bcrypt.genSalt(10);
+      memberFields.password = await bcrypt.hash(newpassword, salt);
+
+      member = await Member.findByIdAndUpdate(
+        req.member.id,
+        { $set: memberFields },
+        { new: true }
+      );
+
+      res.status(200).json({ msg: "Password Changed..!" });
+    } catch (err) {
+      console.error(er.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
 
 module.exports = router;

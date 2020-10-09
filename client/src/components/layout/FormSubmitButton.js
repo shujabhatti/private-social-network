@@ -22,8 +22,8 @@ const FormSubmitButton = (props) => {
 };
 
 const buttonStyle = {
-  color: Color.fore,
-  background: Color.primaryHex,
+  color: Color.lightColor,
+  background: Color.primaryColor,
   width: "100%",
 };
 

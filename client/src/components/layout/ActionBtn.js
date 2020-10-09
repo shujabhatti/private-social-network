@@ -24,7 +24,7 @@ const ActionBtn = (props) => {
 };
 
 ActionBtn.defaultProps = {
-  color: Color.primaryHex,
+  color: Color.primaryColor,
 };
 
 export default ActionBtn;

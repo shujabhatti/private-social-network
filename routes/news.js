@@ -4,6 +4,7 @@ const { promisify } = require("util");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/auth");
+const authMember = require("../middleware/authMember");
 const { check, validationResult } = require("express-validator");
 const News = require("../models/News");
 const multer = require("multer");
@@ -156,6 +157,21 @@ router.delete("/:id", auth, async (req, res) => {
     await News.findByIdAndRemove(req.params.id);
 
     res.json({ msg: "News removed" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET /api/news/readnews
+// @des     Read all news
+// @access  Private
+router.get("/readnews", authMember, async (req, res) => {
+  try {
+    const news = await News.find().sort({
+      create_date: -1,
+    });
+    res.json(news);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

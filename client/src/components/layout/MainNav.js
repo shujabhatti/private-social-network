@@ -33,9 +33,9 @@ import { connect } from "react-redux";
 const selectedItem = (selItem) => {
   var elem = document.getElementById(selItem);
   if (elem) {
-    elem.style.backgroundColor = Color.primaryHex;
-    elem.childNodes[0].style.color = Color.fore;
-    elem.childNodes[0].childNodes[0].style.color = Color.fore;
+    elem.style.backgroundColor = Color.selectedColor;
+    elem.childNodes[0].style.color = Color.darkColor;
+    elem.childNodes[0].childNodes[0].style.color = Color.darkColor;
   }
 };
 
@@ -149,9 +149,7 @@ const MainNav = (props) => {
                               className='input-field'
                               id='change-image-container'
                               style={{
-                                display: "flex",
-                                marginLeft: "15%",
-                                marginBottom: "20px",
+                                textAlign: "center",
                               }}
                             >
                               <input
@@ -169,7 +167,12 @@ const MainNav = (props) => {
                                   display: "contents",
                                 }}
                               >
-                                <i className='material-icons right'>edit</i>
+                                <i
+                                  className='material-icons'
+                                  style={{ verticalAlign: "bottom" }}
+                                >
+                                  edit
+                                </i>
                                 Select Image
                               </label>
                             </div>
@@ -181,7 +184,7 @@ const MainNav = (props) => {
                               value={name}
                               text='Username'
                               onChange={onChange}
-                              style={{ backgroundColor: Color.fore }}
+                              style={{ backgroundColor: Color.lightColor }}
                             />
                             <FormSubmitButton
                               icons={"done_outline"}
@@ -204,12 +207,18 @@ const MainNav = (props) => {
 
   const authLinks = (
     <Fragment>
-      <SideBarItem id={"home-id"} icon={"groups"} text={"Members"} />
+      <SideBarItem id={"home-id"} icon={"group"} text={"Members"} />
       <SideBarItem
         id={"news-id"}
         icon={"assignment"}
         text={`News Feeds`}
         link={"/news"}
+      />
+      <SideBarItem
+        id={"group-id"}
+        icon={"group_add"}
+        text={`Groups`}
+        link={"/groups"}
       />
       <SideBarItem
         id={"change-pass-id"}
@@ -240,31 +249,32 @@ const MainNav = (props) => {
         icon={"assignment_turned_in"}
         link={"/register"}
       />
-      <SideBarItem
-        id={"about-id"}
-        text={"About"}
-        icon={"info"}
-        link={"/about"}
-      />
     </Fragment>
   );
 
   return (
     <Fragment>
-      <nav style={{ background: Color.primaryHex }}>
+      <nav style={{ background: Color.sideNavColor, boxShadow: "none" }}>
         <div className='nav-wrapper'>
-          <h6 href='#!' className='brand-logo center' style={{ width: "100%" }}>
+          <h6
+            href='#!'
+            className='brand-logo center'
+            style={{
+              width: "100%",
+              color: Color.darkColor,
+            }}
+          >
             <span
               className='hide-on-med-and-down'
               style={{ paddingLeft: "15%" }}
             >
-              Private Social Network - [Admin Portal]
+              {props.title}
             </span>
             <span className='show-on-medium hide-on-small-only hide-on-large-only'>
-              PSN - [Admin Portal]
+              {props.title1}
             </span>
-            <span className='show-on-small hide-on-med-and-up'>
-              Admin Portal
+            <span className='show-on-small hide-on-med-and-up left'>
+              {props.title2}
             </span>
           </h6>
           <a
@@ -273,23 +283,28 @@ const MainNav = (props) => {
             data-target='side-nav'
             onClick={openSideNav}
           >
-            <i className='material-icons'>menu</i>
+            <i className='material-icons' style={{ color: Color.darkColor }}>
+              menu
+            </i>
           </a>
           <ul class='right'>
-            <li>{isAuthenticated && onlineUser}</li>
+            <li>{isAuthenticated && props.showUserAvatar && onlineUser}</li>
           </ul>
         </div>
       </nav>
-      <ul className='sidenav sidenav-fixed' id='side-nav'>
-        <li>
+      <ul
+        className='sidenav sidenav-fixed'
+        id='side-nav'
+        style={{ backgroundColor: Color.sideNavColor }}
+      >
+        <li style={{ textAlign: "center" }}>
           <ImageContainer
             className='responsive-img'
             src={require("../images/dashboard.png")}
             style={{
-              width: "90%",
+              width: "70%",
               height: "150px",
               marginTop: "15px",
-              marginLeft: "15px",
             }}
             alt='Logo'
           />
@@ -324,9 +339,9 @@ const useStyles = makeStyles((theme) => ({
   },
   large: {
     marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(6),
     width: theme.spacing(15),
     height: theme.spacing(15),
+    margin: "auto",
   },
   input: {
     "& > *": {
@@ -367,6 +382,7 @@ const StyledBadge = withStyles((theme) => ({
 
 MainNav.defaultProps = {
   selItem: "home-id",
+  showUserAvatar: true,
 };
 
 MainNav.propTypes = {
