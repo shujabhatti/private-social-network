@@ -2,11 +2,13 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const connectDB = require("./config/db");
+const cors = require('cors');
 
 connectDB();
 
 // Init middleware
 app.use(express.json({ extended: false }));
+app.use(cors());
 app.use("/uploads/members", express.static("uploads/members"));
 app.use("/uploads/news", express.static("uploads/news"));
 app.use("/uploads/users", express.static("uploads/users"));
