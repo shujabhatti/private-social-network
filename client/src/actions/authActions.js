@@ -79,7 +79,7 @@ export const login = (formData) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: LOGIN_FAIL,
-      payload: err,
+      payload: err.response.data.msg,
     });
   }
 };
