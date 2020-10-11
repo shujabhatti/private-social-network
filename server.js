@@ -2,6 +2,9 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const connectDB = require("./config/db");
+var cors = require('cors');
+
+app.use(cors());
 
 connectDB();
 

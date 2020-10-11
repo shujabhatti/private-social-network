@@ -157,7 +157,7 @@ router.put(
 
       res.status(200).json({ msg: "Password Changed..!" });
     } catch (err) {
-      console.error(er.message);
+      console.error(err.message);
       res.status(500).send("Server Error");
     }
   }
