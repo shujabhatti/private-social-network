@@ -33,12 +33,18 @@ const fileFilter = function (req, file, cb) {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 10,
   },
   fileFilter,
 });
 
 const environment = process.env.NODE_ENV;
+let httpProtocol;
+if(environment === "production"){
+  httpProtocol = "https:\\\\";
+} else {
+  httpProtocol = "http:\\\\";
+}
 
 // @route   POST /api/users
 // @desc    Register a user
@@ -188,16 +194,16 @@ router.put("/:id", auth, upload.single("userImage"), async (req, res) => {
     const userFields = {};
 
     userFields.name = name;
+
     if (req.file !== undefined) {
-      if (environment === "production") {
-        imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
-      } else {
-        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-      }
+      imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
       imageName = req.file.path;
       userFields.userImage = imagePath;
       userFields.imageName = imageName;
     }
+
+    console.log(userFields);
+    console.log(userFields);
 
     user = await User.findByIdAndUpdate(
       req.params.id,

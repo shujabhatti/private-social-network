@@ -112,7 +112,7 @@ export const updateUser = (formData) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: UPDATE_ERROR,
-      payload: err.response.data.msg,
+      payload: err.message,
     });
   }
 };
