@@ -33,10 +33,18 @@ const fileFilter = function (req, file, cb) {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 10,
   },
   fileFilter,
 });
+
+const environment = process.env.NODE_ENV;
+let httpProtocol;
+if(environment === "production"){
+  httpProtocol = "https:\\\\";
+} else {
+  httpProtocol = "http:\\\\";
+}
 
 // @route   GET /api/groups
 // @des     Get all groups
@@ -87,7 +95,7 @@ router.post("/", auth, upload.single("groupImage"), async (req, res) => {
   let imageName;
 
   if (req.file !== undefined) {
-    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
     imageName = req.file.path;
   } else {
     imagePath = "";
@@ -137,7 +145,7 @@ router.put("/:id", auth, upload.single("groupImage"), async (req, res) => {
 
     groupFields.title = title;
     if (req.file !== undefined) {
-      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
       imageName = req.file.path;
       groupFields.groupImage = imagePath;
       groupFields.imageName = imageName;

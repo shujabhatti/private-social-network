@@ -33,10 +33,18 @@ const fileFilter = function (req, file, cb) {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 10,
   },
   fileFilter,
 });
+
+const environment = process.env.NODE_ENV;
+let httpProtocol;
+if(environment === "production"){
+  httpProtocol = "https:\\\\";
+} else {
+  httpProtocol = "http:\\\\";
+}
 
 // @route   GET /api/members
 // @des     Get all members
@@ -82,11 +90,7 @@ router.post("/", auth, upload.single("memberImage"), async (req, res) => {
   let imageName;
 
   if (req.file !== undefined) {
-    if (environment === "production") {
-      imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
-    } else {
-      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-    }
+    imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
     imageName = req.file.path;
   } else {
     imagePath = "";
@@ -181,11 +185,7 @@ router.put("/:id", auth, upload.single("memberImage"), async (req, res) => {
     }
     memberFields.acc_status = acc_status;
     if (req.file !== undefined) {
-      if (environment === "production") {
-        imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
-      } else {
-        imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-      }
+      imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
       imageName = req.file.path;
       memberFields.memberImage = imagePath;
       memberFields.imageName = imageName;
@@ -226,11 +226,7 @@ router.put(
       let imageName;
 
       if (req.file !== undefined) {
-        if (environment === "production") {
-          imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
-        } else {
-          imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-        }
+        imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
         imageName = req.file.path;
       } else {
         imagePath = "";
@@ -373,11 +369,7 @@ router.put(
       memberFields.name = name;
       memberFields.email = email;
       if (req.file !== undefined) {
-        if (environment === "production") {
-          imagePath = "https:\\\\" + req.headers.host + "\\" + req.file.path;
-        } else {
-          imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
-        }
+        imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
         imageName = req.file.path;
         memberFields.memberImage = imagePath;
         memberFields.imageName = imageName;

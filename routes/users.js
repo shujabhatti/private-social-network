@@ -202,9 +202,6 @@ router.put("/:id", auth, upload.single("userImage"), async (req, res) => {
       userFields.imageName = imageName;
     }
 
-    console.log(userFields);
-    console.log(userFields);
-
     user = await User.findByIdAndUpdate(
       req.params.id,
       { $set: userFields },

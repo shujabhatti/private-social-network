@@ -48,5 +48,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://salty-savannah-58812.herokuapp.com/"
+  "proxy": "http://localhost:5000/"
 }

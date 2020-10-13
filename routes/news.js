@@ -32,10 +32,18 @@ const fileFilter = function (req, file, cb) {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 10,
   },
   fileFilter,
 });
+
+const environment = process.env.NODE_ENV;
+let httpProtocol;
+if(environment === "production"){
+  httpProtocol = "https:\\\\";
+} else {
+  httpProtocol = "http:\\\\";
+}
 
 // @route   GET /api/news
 // @des     Get all news
@@ -70,7 +78,7 @@ router.post("/", auth, upload.single("newsImage"), async (req, res) => {
   let imageName;
 
   if (req.file !== undefined) {
-    imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+    imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
     imageName = req.file.path;
   } else {
     imagePath = "";
@@ -123,7 +131,7 @@ router.put("/:id", auth, upload.single("newsImage"), async (req, res) => {
     newsFields.title = title;
     newsFields.description = description;
     if (req.file !== undefined) {
-      imagePath = "http:\\\\" + req.headers.host + "\\" + req.file.path;
+      imagePath = httpProtocol + req.headers.host + "\\" + req.file.path;
       imageName = req.file.path;
       newsFields.newsImage = imagePath;
       newsFields.imageName = imageName;
