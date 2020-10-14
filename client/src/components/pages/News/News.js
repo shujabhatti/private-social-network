@@ -128,7 +128,7 @@ const News = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"news-id"} title={"News Management"} />
+      <MainNav selItem={"news-id"} title={"News Management"} title1={"News Management"} title2={'News'} />
       <div className='main'>
         <div className='row'>
           <div className='row'>
@@ -160,7 +160,7 @@ const News = (props) => {
                     </li>
                   </ul>
                 )}
-                {!loading && records.length === 0 ? (
+                {(!loading && records.length === 0) || (!loading && onscreenrecords.length === 0) ? (
                   <ul style={listStyle}>
                     <li>
                       <div class='collapsible-header' style={listItemStyle}>

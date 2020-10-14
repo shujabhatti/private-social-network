@@ -426,22 +426,21 @@ const MembersAdministrator = (props) => {
                       />
                     </div>
                     {/* Student Data Section */}
-                    <div className='col s5 offset-m1 m2'>
+                    <div className='col s5 offset-m1 m3 offset-l1 l2'>
                       <FormSubmitButton
                         icons={`${current ? "edit" : "add"}`}
                         text={`${current ? "Update" : "Add"}`}
                       />
                     </div>
-                    <div className='col s5 m2'>
+                    <div className='col s5 m3 l2'>
                       <ButtonContainer
+                        icons={"close"}
                         text={"Close"}
                         link={"/"}
                         onClick={() => props.clearCurrent()}
                         style={{
-                          backgroundColor: "transparent",
-                          color: Color.dangerColor,
-                          fontWeight: "bold",
                           width: "100%",
+                          backgroundColor: Color.dangerColor,
                         }}
                       />
                     </div>
@@ -455,7 +454,7 @@ const MembersAdministrator = (props) => {
       <ConfirmationDialogue
         open={confirmDialog}
         onConfirmDialogClose={onConfirmDialogClose}
-        title='Update Member'
+        title={`${current ? "Update Member" : "Add Member"}`}
         content='Are you sure you want to save changes?'
         onConfirm={onConfirm}
       />

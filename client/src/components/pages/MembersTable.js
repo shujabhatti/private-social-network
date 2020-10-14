@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import InputContainer from "../layout/InputContainer";
 import ConfirmationDialogue from "../layout/ConfirmationDialogue";
+import SubHeader from "../layout/SubHeader";
 import Color from "../constants/Colors";
 import Moment from "react-moment";
 
@@ -14,6 +15,7 @@ import {
 } from "../../actions/memberActions";
 
 import {
+  Modal,
   Card,
   CardHeader,
   CardContent,
@@ -21,10 +23,6 @@ import {
   Avatar,
   IconButton,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   Tooltip,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -50,8 +48,30 @@ const MembersTable = (props) => {
   const [confirmDialog, setConfirmDialog] = useState(false);
   // Hook to get current member ID
   const [currentMemberID, setCurrentMemberID] = useState("");
-  // On Opening / Closing Filter Dialog
-  const [filterDialog, setFilterDialog] = useState(false);
+  
+  function getModalStyle() {
+    const top = 50;
+    const left = 50;
+
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
+  const [modalStyle] = useState(getModalStyle);
+  // For Modal
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   //#endregion
 
@@ -82,10 +102,6 @@ const MembersTable = (props) => {
   const onConfirm = () => {
     props.deleteMember(currentMemberID);
     onConfirmDialogClose();
-  };
-
-  const onFilterDialogClose = () => {
-    setFilterDialog(false);
   };
 
   //#region On Screen Filters Function
@@ -170,7 +186,7 @@ const MembersTable = (props) => {
             <StyledTooltip title='Filters' placement='top' arrow>
               <IconButton
                 aria-label='filters'
-                onClick={() => setFilterDialog(true)}
+                onClick={handleOpen}
               >
                 <i className={`material-icons`}>filter_list</i>
               </IconButton>
@@ -190,7 +206,7 @@ const MembersTable = (props) => {
             </li>
           </ul>
         )}
-        {!loading && members.length === 0 ? (
+        {(!loading && members.length === 0) || (!loading && onscreenmembers.length === 0) ? (
           <ul style={listStyle}>
             <li>
               <div class='collapsible-header' style={listItemStyle}>
@@ -269,53 +285,53 @@ const MembersTable = (props) => {
         onConfirm={onConfirm}
       />
       {/* Filter Dialog */}
-      <Dialog
-        open={filterDialog}
-        onClose={onFilterDialogClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-        className={classes.dialogContainer}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'
       >
-        <DialogTitle id='alert-dialog-title'>Filter Members</DialogTitle>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            <div className='row' style={{ width: "250px" }}>
-              <InputContainer
-                type='text'
-                name='idfil'
-                value={idfil}
-                text='Member ID'
-                onChange={(e) => setIDFil(e.target.value)}
-                onKeyUp={() => onScreenFilter()}
-                onPaste={() => onScreenFilter()}
-                style={inputStyle}
-              />
+        <div style={modalStyle} className={classes.paper}>
+          <SubHeader
+            text={"Filter Members"}
+            style={{ fontSize: "1.2em" }}
+          />
+          <div className='row' style={{ width: "250px" }}>
+            <InputContainer
+              type='text'
+              name='idfil'
+              value={idfil}
+              text='Member ID'
+              onChange={(e) => setIDFil(e.target.value)}
+              onKeyUp={() => onScreenFilter()}
+              onPaste={() => onScreenFilter()}
+              style={inputStyle}
+            />
 
-              <InputContainer
-                type='text'
-                name='namefil'
-                value={namefil}
-                text='Member Name'
-                onChange={(e) => setNameFil(e.target.value)}
-                onKeyUp={() => onScreenFilter()}
-                onPaste={() => onScreenFilter()}
-                style={inputStyle}
-              />
+            <InputContainer
+              type='text'
+              name='namefil'
+              value={namefil}
+              text='Member Name'
+              onChange={(e) => setNameFil(e.target.value)}
+              onKeyUp={() => onScreenFilter()}
+              onPaste={() => onScreenFilter()}
+              style={inputStyle}
+            />
 
-              <InputContainer
-                type='text'
-                name='emailfil'
-                value={emailfil}
-                text='Email Address'
-                onChange={(e) => setEmailFil(e.target.value)}
-                onKeyUp={() => onScreenFilter()}
-                onPaste={() => onScreenFilter()}
-                style={inputStyle}
-              />
-            </div>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
+            <InputContainer
+              type='text'
+              name='emailfil'
+              value={emailfil}
+              text='Email Address'
+              onChange={(e) => setEmailFil(e.target.value)}
+              onKeyUp={() => onScreenFilter()}
+              onPaste={() => onScreenFilter()}
+              style={inputStyle}
+            />
+          </div>
+        </div>
+      </Modal>
     </Fragment>
   );
 };
@@ -326,16 +342,18 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
     borderRadius: 10,
   },
-  right: {
-    float: "right",
-  },
   large: {
     width: theme.spacing(7),
     height: theme.spacing(7),
   },
-  dialogContainer: {
-    opacity: "0.9",
-    textAlign: "center",
+  paper: {
+    position: "absolute",
+    width: 350,
+    backgroundColor: Color.backgorundColor,
+    boxShadow: theme.shadows[5],
+    border: "0px",
+    borderRadius: 10,
+    outline: 'none' 
   },
 }));
 

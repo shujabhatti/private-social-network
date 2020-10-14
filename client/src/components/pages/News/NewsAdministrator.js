@@ -253,16 +253,13 @@ const NewsAdministrator = (props) => {
                             }}
                           />
                           <ButtonContainer
+                            icons={"close"}
                             text={"Close"}
                             link={"/news"}
                             onClick={() => props.clearCurrent()}
                             style={{
-                              color: Color.dangerColor,
-                              fontWeight: "bold",
-                              backgroundColor: "transparent",
                               width: "auto",
-                              marginLeft: "20px",
-                              marginRight: "10px",
+                              backgroundColor: Color.dangerColor,
                             }}
                           />
                         </div>
@@ -278,7 +275,7 @@ const NewsAdministrator = (props) => {
       <ConfirmationDialogue
         open={confirmDialog}
         onConfirmDialogClose={onConfirmDialogClose}
-        title='Update News'
+        title={`${current ? "Update News" : "Add News"}`}
         content='Are you sure you want to save changes?'
         onConfirm={onConfirm}
       />

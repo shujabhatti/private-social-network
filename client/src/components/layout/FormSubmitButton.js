@@ -8,7 +8,6 @@ const FormSubmitButton = (props) => {
       <button
         type='submit'
         className={`col s12 btn-small waves-effect waves-dark`}
-        tabIndex='-1'
         style={{ ...props.style, ...buttonStyle }}
         {...props}
       >

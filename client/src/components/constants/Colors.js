@@ -1,6 +1,6 @@
 export default {
   backgorundColor: "#FFFFFF", // "#FAFAFA"
-  sideNavColor: "#F5F5F5",
+  sideNavColor: "#FAFAFA",
   inputColor: "#E8EAED",
   itemColor: "#F5F5F5", // "#FAFAFA"
   primaryColor: "#1A73E8",

@@ -14,6 +14,7 @@ import {
 import BgParticles from "../layout/BgParticles";
 
 import M from "materialize-css/dist/js/materialize.min.js";
+import {Link} from 'react-router-dom';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -58,11 +59,17 @@ const ChangePassword = (props) => {
   return (
     <Fragment>
       <BgParticles />
-      <MainNav selItem={"change-pass-id"} title={"Admin [Change Password]"} />
+      <MainNav title={"Admin [Change Password]"} />
       <div className='main'>
         <div className='row'>
           <div className='col s10 offset-s1 m6 offset-m3 l4 offset-l4'>
             <FormLayout>
+              <Link to={"/"} style={{float: 'right'}}>
+                <i className='material-icons'>
+                  close
+                </i>
+              </Link>
+              <br/>
               <SubHeader
                 text={"Change Password"}
                 src={require("../images/changepassword.png")}

@@ -151,10 +151,7 @@ const GroupAdministrator = (props) => {
                           src={showImage}
                           className={classes.large}
                         />
-                        <div
-                          className='col s5 m12'
-                          style={{ textAlign: "center" }}
-                        >
+                        <div>
                           <div
                             className='input-field'
                             id='change-image-container'
@@ -232,20 +229,20 @@ const GroupAdministrator = (props) => {
                           icons={`${current ? "edit" : "add"}`}
                           text={`${current ? "Update Group" : "Add Group"}`}
                           style={{
+                            marginLeft: "20px",
+                            marginRight: "10px",
                             width: "auto",
                             backgroundColor: Color.primaryColor,
                           }}
                         />
                         <ButtonContainer
+                          icons={"close"}
                           text={"Close"}
                           link={"/groups"}
                           onClick={() => props.clearCurrent()}
                           style={{
-                            color: Color.dangerColor,
-                            fontWeight: "bold",
-                            backgroundColor: "transparent",
                             width: "auto",
-                            marginLeft: "20px",
+                            backgroundColor: Color.dangerColor,
                           }}
                         />
                       </div>
@@ -260,7 +257,7 @@ const GroupAdministrator = (props) => {
       <ConfirmationDialogue
         open={confirmDialog}
         onConfirmDialogClose={onConfirmDialogClose}
-        title='Update Group'
+        title={`${current ? "Update Group" : "Add Group"}`}
         content='Are you sure you want to save changes?'
         onConfirm={onConfirm}
       />

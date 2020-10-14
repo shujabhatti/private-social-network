@@ -5,6 +5,7 @@ import ImageContainer from "./ImageContainer";
 import InputContainer from "./InputContainer";
 import LabelContainer from "./LabelContainer";
 import FormSubmitButton from "./FormSubmitButton";
+import ButtonContainer from "./ButtonContainer";
 
 import {
   loadUser,
@@ -26,6 +27,7 @@ import {
 import PopupState, { bindToggle, bindPopper } from "material-ui-popup-state";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import M from "materialize-css/dist/js/materialize.min.js";
+import {Link} from 'react-router-dom';
 
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -40,7 +42,7 @@ const selectedItem = (selItem) => {
 };
 
 const MainNav = (props) => {
-  const { isAuthenticated, user, chgpwdmsg } = props;
+  const { isAuthenticated, user, returnmessage } = props;
 
   const initialInputs = {
     name: "",
@@ -65,13 +67,14 @@ const MainNav = (props) => {
       setShowImage(user.userImage);
     }
 
-    if (chgpwdmsg) {
+    if (returnmessage === "Changes Saved..!") {
+      M.toast({ html: `${returnmessage}` });
       props.clearErrors();
       props.loadUser();
     }
 
     // eslint-disable-next-line
-  }, [user, chgpwdmsg]);
+  }, [user, returnmessage]);
 
   const onLogout = () => {
     props.clearMembers();
@@ -117,7 +120,7 @@ const MainNav = (props) => {
               >
                 <Avatar
                   alt={`${user && user.name}`}
-                  src={user.userImage}
+                  src={user.userImage && user.userImage}
                   style={{ cursor: "pointer" }}
                   {...bindToggle(popupState)}
                 />
@@ -128,7 +131,7 @@ const MainNav = (props) => {
                 className={`${classes.popper} z-depth-4`}
               >
                 {({ TransitionProps }) => (
-                  <Fade {...TransitionProps} timeout={350}>
+                  <Fade {...TransitionProps} timeout={500}>
                     <Paper>
                       <Typography className={classes.typography}>
                         <div className='row'>
@@ -186,9 +189,22 @@ const MainNav = (props) => {
                               onChange={onChange}
                               style={{ backgroundColor: Color.lightColor }}
                             />
+                            <Link to={"/change-password"} style={{float: 'right', marginBottom: '10px', fontWeight: 'bold'}}>Change Password?</Link>
                             <FormSubmitButton
                               icons={"done_outline"}
                               text={"Save Changes"}
+                              {...bindToggle(popupState)}
+                            />
+                            <ButtonContainer
+                              icons={"exit_to_app"}
+                              text={"Logout"}
+                              onClick={onLogout}
+                              link={"/login"}
+                              style={{
+                                marginTop: "10px",
+                                width: "100%",
+                                backgroundColor: Color.dangerColor,
+                              }}
                             />
                           </form>
                         </div>
@@ -219,18 +235,6 @@ const MainNav = (props) => {
         icon={"group_add"}
         text={`Groups`}
         link={"/groups"}
-      />
-      <SideBarItem
-        id={"change-pass-id"}
-        text={"Change Password"}
-        icon={"lock"}
-        link={"/change-password"}
-      />
-      <SideBarItem
-        id={"exit-id"}
-        icon={"exit_to_app"}
-        text={"Logout"}
-        onClick={onLogout}
       />
     </Fragment>
   );
@@ -273,7 +277,7 @@ const MainNav = (props) => {
             <span className='show-on-medium hide-on-small-only hide-on-large-only'>
               {props.title1}
             </span>
-            <span className='show-on-small hide-on-med-and-up left'>
+            <span className='show-on-small hide-on-med-and-up'>
               {props.title2}
             </span>
           </h6>
@@ -302,7 +306,7 @@ const MainNav = (props) => {
             className='responsive-img'
             src={require("../images/dashboard.png")}
             style={{
-              width: "70%",
+              width: "auto",
               height: "150px",
               marginTop: "15px",
             }}
@@ -381,7 +385,7 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 MainNav.defaultProps = {
-  selItem: "home-id",
+  // selItem: "home-id",
   showUserAvatar: true,
 };
 
@@ -395,12 +399,13 @@ MainNav.propTypes = {
   isAuthenticated: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
+  returnmessage: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
-  chgpwdmsg: state.auth.chgpwdmsg,
+  returnmessage: state.auth.returnmessage,
   error: state.auth.error,
 });
 

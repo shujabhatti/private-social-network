@@ -13,8 +13,8 @@ const ButtonContainer = (props) => {
         onClick={props.onClick}
         {...props}
       >
-        <i className='material-icons left'>{props.icons}</i>
-        {props.text}
+        <i className='material-icons' style={{ verticalAlign: "middle" }}>{props.icons}</i>
+        &nbsp;&nbsp;{props.text}
       </a>
     </Link>
   );

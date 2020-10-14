@@ -126,7 +126,7 @@ const Groups = (props) => {
 
   return (
     <Fragment>
-      <MainNav selItem={"group-id"} title={"Groups Management"} />
+      <MainNav selItem={"group-id"} title={"Groups Management"} title1={"Groups Management"} title2={'Groups'} />
       <div className='main'>
         <div className='row'>
           <div className='row'>
@@ -157,7 +157,7 @@ const Groups = (props) => {
                       </div>
                     </li>
                   )}
-                  {!loading && records.length === 0 ? (
+                  {(!loading && records.length === 0) || (!loading && onscreenrecords.length === 0) ? (
                     <li>
                       <div class='collapsible-header' style={listItemStyle}>
                         <i class='material-icons'>error_outline</i>
