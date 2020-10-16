@@ -23,10 +23,17 @@ export const getGroupsList = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: GROUP_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -40,10 +47,17 @@ export const setOnScreenGroups = (obj) => async (dispatch) => {
       payload: data,
     });
   } catch (err) {
-    dispatch({
-      type: GROUP_ERROR,
-      payload: err.response.statusText,
-    });
+    if(err.response){
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -69,10 +83,17 @@ export const addGroup = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: GROUP_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -102,10 +123,17 @@ export const updateGroup = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: GROUP_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -125,10 +153,17 @@ export const deleteGroup = (_id) => async (dispatch) => {
       payload: _id,
     });
   } catch (err) {
-    dispatch({
-      type: GROUP_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: GROUP_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 

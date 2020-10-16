@@ -52,6 +52,20 @@
 
 /* --------------------------------------------------------------------- */
 
+/* CSS to hide scroll-bar Starts here */
+
+html {
+  overflow: scroll;
+}
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
+/* CSS to hide scroll-bar Ends here */
+
+/* --------------------------------------------------------------------- */
+
 /* Main Div Styling Starts Here */
 
 header,

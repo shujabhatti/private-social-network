@@ -52,10 +52,17 @@ export const register = (formData) => async (dispatch) => {
 
     loadUser();
   } catch (err) {
-    dispatch({
-      type: REGISTER_FAIL,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -77,10 +84,17 @@ export const login = (formData) => async (dispatch) => {
 
     loadUser();
   } catch (err) {
-    dispatch({
-      type: LOGIN_FAIL,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -110,10 +124,17 @@ export const updateUser = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: UPDATE_ERROR,
-      payload: err.message,
-    });
+    if(err.response){
+      dispatch({
+        type: UPDATE_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: UPDATE_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -133,10 +154,17 @@ export const changePassword = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: CHANGE_PASSWORD_FAIL,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: CHANGE_PASSWORD_FAIL,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: CHANGE_PASSWORD_FAIL,
+        payload: err.message,
+      });
+    }
   }
 };
 

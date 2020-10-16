@@ -23,10 +23,17 @@ export const getNewsList = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: NEWS_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -40,10 +47,17 @@ export const setOnScreenNews = (obj) => async (dispatch) => {
       payload: data,
     });
   } catch (err) {
-    dispatch({
-      type: NEWS_ERROR,
-      payload: err.response.statusText,
-    });
+    if(err.response){
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -69,10 +83,17 @@ export const addNews = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: NEWS_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -98,10 +119,17 @@ export const updateNews = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: NEWS_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -121,10 +149,17 @@ export const deleteNews = (_id) => async (dispatch) => {
       payload: _id,
     });
   } catch (err) {
-    dispatch({
-      type: NEWS_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: NEWS_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 

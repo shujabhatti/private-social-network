@@ -24,10 +24,17 @@ export const getMembers = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -41,10 +48,17 @@ export const setOnScreenMembers = (obj) => async (dispatch) => {
       payload: data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.statusText,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -70,10 +84,17 @@ export const addMember = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -103,10 +124,17 @@ export const updateMember = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -136,10 +164,17 @@ export const updateImage = (id, imgObj) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -163,10 +198,17 @@ export const changePassword = (formData) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.data.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 
@@ -186,10 +228,17 @@ export const deleteMember = (_id) => async (dispatch) => {
       payload: _id,
     });
   } catch (err) {
-    dispatch({
-      type: MEMBER_ERROR,
-      payload: err.response.msg,
-    });
+    if(err.response){
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.response.data.msg,
+      });
+    } else {
+      dispatch({
+        type: MEMBER_ERROR,
+        payload: err.message,
+      });
+    }
   }
 };
 

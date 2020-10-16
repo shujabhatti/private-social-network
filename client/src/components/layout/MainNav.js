@@ -308,7 +308,7 @@ const MainNav = (props) => {
             style={{
               width: "auto",
               height: "150px",
-              marginTop: "15px",
+              marginTop: "30px",
             }}
             alt='Logo'
           />
@@ -326,7 +326,7 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       margin: theme.spacing(1),
     },
-    marginRight: theme.spacing(6),
+    marginRight: theme.spacing(3),
     marginTop: theme.spacing(-1),
   },
   tooltip: {

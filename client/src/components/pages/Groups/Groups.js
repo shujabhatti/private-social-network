@@ -133,7 +133,7 @@ const Groups = (props) => {
             <div className='col s10 offset-s1'>
               {/* Filter Container */}
               <div className='row'>
-                <div className='col s12 m6'>
+                <div className='col s10 m6'>
                   <InputContainer
                     type='text'
                     name='titlefil'
