@@ -206,4 +206,86 @@ router.get("/member-group/:id", authMember, async (req, res) => {
   
 });
 
+//--------------------------------
+//--------------------------------
+//--------Messaging Routes--------
+//--------------------------------
+//--------------------------------
+
+// @route   POST /api/groups/new/message
+// @desc    Add new message
+// @access  Private
+router.post('/new/message', authMember, async (req, res) => {
+  try {
+    await Group.update(
+      { _id: req.query.id,},
+      { $push: { conversation: req.body }},
+    );
+    res.json("Message added successfully!");    
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET /api/groups/get/conversation
+// @desc    Get conversation
+// @access  Private
+router.get('/get/conversation', authMember, async (req, res) => {
+  try {
+    const data = await Group.find({_id: req.query.id});
+
+    let convData = data[0].conversation;
+
+    convData.sort((b, a) => {
+      return a.timestamp - b.timestamp;
+    })
+
+    res.json(convData);    
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET /api/groups/get/lastMessage
+// @desc    Get conversation last message
+// @access  Private
+router.get('/get/lastMessage', authMember, async (req, res) => {
+  try {
+    const data = await Group.find({_id: req.query.id});
+
+    let convData = data[0].conversation;
+
+    convData.sort((b, a) => {
+      return a.timestamp - b.timestamp;
+    })
+
+    res.json(convData[0]);    
+  } catch (error) {
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route     DELETE /api/groups/conversation/delete
+// @desc      Delete specific message
+// @access    Private
+router.delete("/conversation/delete", authMember, async (req, res) => {
+  try {
+    
+    await Group.findOneAndUpdate(
+      { _id: req.query.id },
+      { $pull: { conversation: { _id: req.query.msgid} } },
+      { new: true },
+      function(err) {
+          if (err) {
+            res.status(400).json({err})  
+          }
+      })
+
+    res.json("Message deleted!");
+    
+  } catch (err) {
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;

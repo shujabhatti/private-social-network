@@ -23,6 +23,16 @@ const GroupScheme = new mongoose.Schema({
     type: String,
     default: "",
   },
+  conversation: [
+    {
+      message: String,
+      timestamp: String,
+      displayName: String,
+      email: String,
+      photo: String,
+      uid: String
+    }
+  ]
 });
 
 module.exports = mongoose.model("Groups", GroupScheme);
