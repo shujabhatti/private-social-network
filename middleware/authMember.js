@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
   // Check if token exist
   if (!membertoken) {
     res.status(401).json({ msg: "Token not found, authorization denied..!" });
+    return;
   }
 
   try {
